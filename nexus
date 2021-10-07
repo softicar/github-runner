@@ -2,7 +2,7 @@
 
 CONTAINER_NAME="nexus"
 IMAGE_NAME="sonatype/nexus3"
-VOLUME_NAME="nexus-data-test"
+VOLUME_NAME="nexus-data"
 
 function is_running {
 	[ "`docker ps -q -f name=$CONTAINER_NAME`" != "" ]
