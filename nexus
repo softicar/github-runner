@@ -1,0 +1,61 @@
+#!/bin/bash
+
+CONTAINER_NAME="nexus"
+IMAGE_NAME="sonatype/nexus3"
+VOLUME_NAME="nexus-data-test"
+
+function is_running {
+	[ "`docker ps -q -f name=$CONTAINER_NAME`" != "" ]
+}
+
+function volume_exists {
+	[ "`docker volume ls -q -f name=$VOLUME_NAME -q`" != "" ]
+}
+
+function print_status {
+	if is_running
+	then
+		echo "Container '$CONTAINER_NAME' is running."
+	else
+		echo "Container '$CONTAINER_NAME' is not running."
+	fi
+
+	if volume_exists
+	then
+		echo "Data volume '$VOLUME_NAME' exists."
+	else
+		echo "Data volume '$VOLUME_NAME' does not exists."
+	fi
+}
+
+function create_volume {
+	echo "Creating data volume '$VOLUME_NAME'."
+	docker volume create --name $VOLUME_NAME
+}
+
+function start_nexus {
+	echo "Starting container '$CONTAINER_NAME'..."
+	docker run --rm -d -p 8081:8081 -p 8123:8123 -v $VOLUME_NAME:/nexus-data --name $CONTAINER_NAME $IMAGE_NAME
+}
+
+function stop_nexus {
+	echo "Stopping container '$CONTAINER_NAME'..."
+	docker stop --time=120 $CONTAINER_NAME
+}
+
+if [ "$1" == "start" ]
+then
+	print_status
+	volume_exists || create_volume
+	is_running || start_nexus
+elif [ "$1" == "stop" ]
+then
+	print_status
+	is_running && stop_nexus
+elif [ "$1" == "status" ]
+then
+	print_status
+else
+	echo "Usage: $0 start|stop|status"
+fi
+
