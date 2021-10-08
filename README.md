@@ -31,12 +31,14 @@ The following things must be installed or set up, in order to use the Runner imp
   - The `softicar` user must be able to run `docker` commands (e.g. `docker ps`).
 - [Sysbox](https://github.com/nestybox/sysbox/releases)
   - The `.deb` package that matches your distro must be installed.
+- Admin access to the repository to build.
 - Access to the Prevent-DEV GitHub bot user account, to create a [GitHub Personal Access Token](https://docs.github.com/en/authentication/keeping-your-account-and-data-secure/creating-a-personal-access-token), with scopes (i.e. permissions) as described below.
 - Permissions to create a new VM.
 
 ## Usage
 
-1. Log in to the account of the Prevent-DEV GitHub bot user.
+1. In `Settings` / `Manage Access` of the repository to build, add the Prevent-DEV GitHub bot user as an `Admin`.
+1. Log in to the account of the bot user.
    - Create a Personal Access Token, with the scopes (permissions) described in `softicar-github-runner.env-example`.
 1. Create a VM from a recent Ubuntu template, and perform basic setup as usual.
 1. Configure the firewall to isolate the VM from the rest of the network (e.g. via dedicated DMZ).
