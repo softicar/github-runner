@@ -16,12 +16,12 @@ A [GitHub Actions Runner](https://github.com/actions/runner) that builds a Softi
 - On the Runner machine, that code is executed with the permissions of the user that runs the build.
 - This way, files on the Runner machine can be manipulated, and/or its network access can be exploited.
 - This enables DOS and other kinds of attacks against the Runner machine itself, and/or network-connected machines, unless counter-measures are applied.
-- The Runner implementation in this repository aims to sandbox the build execution: It accepts the fact that the Runner machine may get compromised – but it negates the consequences.
+- The Runner implementation in this repository aims to sandbox the build execution: It accepts the fact that the Runner machine may get compromised – but it limits the consequences.
 - It does so by...
   1. starting an ephemeral [https://github.com/actions/runner](GitHub Actions Runner) in an unprivileged Docker container, and
   1. disposing the container after each build.
 - The Runner implementation in this repository **does not** provide network isolation of builds.
-  - This needs to be solved on network level (see [Requirements](#Requirements)).
+  - This needs to be solved on the network level (see [Requirements](#Requirements)).
 
 ## Requirements
 
@@ -36,7 +36,7 @@ The following things must be installed or set up, in order to use the Runner imp
 
 ## Usage
 
-1. Log in the to account of the Prevent-DEV GitHub bot user.
+1. Log in to the account of the Prevent-DEV GitHub bot user.
    - Create a Personal Access Token, with the scopes (permissions) described in `softicar-github-runner.env-example`.
 1. Create a VM from a recent Ubuntu template, and perform basic setup as usual.
 1. Configure the firewall to isolate the VM from the rest of the network (e.g. via dedicated DMZ).
