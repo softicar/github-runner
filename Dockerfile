@@ -1,6 +1,3 @@
-# A GitHub Actions Runner that builds SoftiCAR Java projects in a Docker container.
-# Supports unprivileged DinD (Docker-in-Docker) via nestybox/sysbox.
-
 # Use the Ubuntu base image provided by the "sysbox" vendor, "nestybox"
 # see https://github.com/nestybox/dockerfiles/blob/master/ubuntu-focal-systemd-docker/Dockerfile
 FROM nestybox/ubuntu-focal-systemd-docker

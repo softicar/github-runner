@@ -10,6 +10,8 @@
 #   sudo systemctl stop softicar-github-runner
 # See live logs with:
 #   journalctl -f -u softicar-github-runner --no-hostname --no-tail
+#
+# TODO add a simple installer for this service, and update README.me accordingly
 
 [Unit]
 Description=SoftiCAR GitHub Runner Container
