@@ -10,12 +10,14 @@
 #
 # For reference: https://hub.docker.com/r/sonatype/nexus3/
 
+MAVEN_PROXY_PORT=8081
+DOCKER_PROXY_PORT=8123
+
 CONTAINER_NAME="nexus"
 IMAGE_NAME="sonatype/nexus3"
 VOLUME_NAME="nexus-data"
-
-MAVEN_PROXY_PORT=8081
-DOCKER_PROXY_PORT=8123
+TIMEOUT="3m"
+SERVER_TEST_COMMAND="curl -sI http://127.0.0.1:$MAVEN_PROXY_PORT/ | grep 'HTTP.* 200 OK' -q"
 
 function is_running {
 	[ "`docker ps -q -f name=$CONTAINER_NAME`" != "" ]
@@ -49,12 +51,24 @@ function create_volume {
 function start_nexus {
 	echo "Starting container '$CONTAINER_NAME'..."
 	docker run \
-		--rm -d \
+		-d \
+		--rm \
 		--name $CONTAINER_NAME \
 		-v $VOLUME_NAME:/nexus-data \
 		-p $MAVEN_PROXY_PORT:$MAVEN_PROXY_PORT \
 		-p $DOCKER_PROXY_PORT:$DOCKER_PROXY_PORT \
 		$IMAGE_NAME
+
+	echo -n "Waiting for server to be reachable"
+	if timeout $TIMEOUT bash -c "while ! $SERVER_TEST_COMMAND; do echo -n '.'; sleep 1; done"
+	then
+		echo
+		echo "Start-up successful."
+	else
+		echo
+		echo "Timeout trying to reach sever: $SERVER_TEST_COMMAND"
+		exit 1
+	fi
 }
 
 function stop_nexus {
