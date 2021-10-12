@@ -1,7 +1,7 @@
 # Install with:
-#   sudo install -m 644 nexus.service /etc/systemd/system/
+#   sudo install -m 644 softicar-github-runner-composed.service /etc/systemd/system/
 #   sudo systemctl daemon-reload
-#   sudo systemctl enable nexus
+#   sudo systemctl enable softicar-github-runner-composed
 # 
 # TODO add a simple installer for this service, and update README.me accordingly
 
