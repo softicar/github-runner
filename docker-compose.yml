@@ -1,6 +1,4 @@
 # Environment variables:
-# - NEXUS_DATA_VOLUME_NAME
-#     TODO describe
 # - NEXUS_PROXY_PORT
 #     TODO describe
 # - NEXUS_HEALTH_INTERVAL
@@ -15,6 +13,8 @@
 #     TODO describe
 # - RUNNER_BUILD_PROPERTIES_FILE
 #     TODO describe
+# - RUNNER_ENV_FILE
+#     TODO describe
 
 version: "3.4"
 services:
@@ -24,7 +24,7 @@ services:
     ports:
       - ${NEXUS_PROXY_PORT:-8081}
     volumes:
-      - "${NEXUS_DATA_VOLUME_NAME:-nexus-data}:/nexus-data"
+      - "nexus-data:/nexus-data"
     healthcheck:
       test: ["CMD", "curl", "-f", "http://127.0.0.1:${NEXUS_PROXY_PORT:-8081}/"]
       start_period: ${NEXUS_HEALTH_START_PERIOD:-90s}
@@ -44,7 +44,12 @@ services:
         condition: service_healthy
     runtime: sysbox-runc
 #   restart: always
+    env_file:
+      - ${RUNNER_ENV_FILE:-/home/softicar/.softicar/softicar-github-runner.env}
     volumes:
-      - "${RUNNER_BUILD_PROPERTIES_FILE:-/home/softicar/.softicar/build.properties}:/home/softicar/.softicar/build.properties:read-only"
+      - "${RUNNER_BUILD_PROPERTIES_FILE:-/home/softicar/.softicar/build.properties}:/home/softicar/.softicar/build.properties:ro"
     links:
       - nexus
+
+volumes:
+  nexus-data:
