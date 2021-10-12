@@ -1,18 +1,33 @@
 # Environment variables:
-# - NEXUS_HEALTH_INTERVAL
-#     TODO describe
-# - NEXUS_HEALTH_RETRIES
-#     TODO describe
-# - NEXUS_HEALTH_START_PERIOD
-#     TODO describe
-# - NEXUS_HEALTH_TIMEOUT
-#     TODO describe
-# - NEXUS_VERSION
-#     TODO describe
-# - RUNNER_BUILD_PROPERTIES_FILE
-#     TODO describe
-# - RUNNER_ENV_FILE
-#     TODO describe
+#
+# NEXUS_CHECK_INTERVAL
+#   The polling interval for the "nexus" service health check.
+#   Default: "5s"
+#
+# NEXUS_CHECK_RETRIES
+#   The number of retries for the "nexus" service health check.
+#   Default: "20"
+#
+# NEXUS_CHECK_START_PERIOD
+#   The time to wait until the first "nexus" service health check.
+#   Default: "80s"
+#
+# NEXUS_CHECK_TIMEOUT
+#   The amount of time after which an individual "nexus" service health check is considered failed.
+#   Should be smaller than NEXUS_CHECK_INTERVAL.
+#   Default: "4s"
+#
+# NEXUS_VERSION
+#   The version of the "sonatype/nexus3" image.
+#   Default: "3.34.1"
+#
+# RUNNER_BUILD_PROPERTIES_FILE
+#   The absolute path to the "build.properties" file on the host.
+#   Default: "/home/softicar/.softicar/build.properties"
+#
+# RUNNER_ENV_FILE
+#   The absolute path to the "softicar-github-runner.env" file on the host.
+#   Default: "/home/softicar/.softicar/softicar-github-runner.env"
 
 version: "3.4"
 services:
@@ -25,10 +40,10 @@ services:
       - "nexus-data:/nexus-data"
     healthcheck:
       test: ["CMD", "curl", "-f", "http://127.0.0.1:8081/"]
-      start_period: ${NEXUS_HEALTH_START_PERIOD:-90s}
-      interval: ${NEXUS_HEALTH_INTERVAL:-10s}
-      retries: ${NEXUS_HEALTH_RETRIES:-9}
-      timeout: ${NEXUS_HEALTH_TIMEOUT:-5s}
+      start_period: ${NEXUS_CHECK_START_PERIOD:-80s}
+      interval: ${NEXUS_CHECK_INTERVAL:-5s}
+      retries: ${NEXUS_CHECK_RETRIES:-20}
+      timeout: ${NEXUS_CHECK_TIMEOUT:-4s}
 
   runner:
     container_name: runner
@@ -41,7 +56,6 @@ services:
       nexus:
         condition: service_healthy
     runtime: sysbox-runc
-#   restart: always
     env_file:
       - ${RUNNER_ENV_FILE:-/home/softicar/.softicar/softicar-github-runner.env}
     volumes:
