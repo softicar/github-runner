@@ -51,3 +51,4 @@ services:
 
 volumes:
   nexus-data:
+    external: true

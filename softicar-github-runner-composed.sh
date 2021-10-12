@@ -5,7 +5,7 @@ SCRIPT_PATH=$(cd `dirname $0` && pwd)
 # Unregisters the previously registered runner.
 teardown() {
   echo "Shutting down containers..."
-  docker-compose -f $SCRIPT_PATH/docker-compose.yml down
+  docker-compose -f $SCRIPT_PATH/docker-compose.yml down --timeout 120
   echo "Containers were shut down."
 }
 
@@ -26,8 +26,14 @@ docker ps > /dev/null 2>&1 || { echo "Fatal: User ${USER} has insufficient permi
 
 trap_signals
 
+# docker-compose -f $SCRIPT_PATH/docker-compose.yml up -d nexus && \
+# docker-compose -f $SCRIPT_PATH/docker-compose.yml up --build --force-recreate runner
+
+
+
+docker-compose rm -f runner
 docker-compose -f $SCRIPT_PATH/docker-compose.yml up -d nexus && \
-docker-compose -f $SCRIPT_PATH/docker-compose.yml up --build --force-recreate runner
+docker-compose -f $SCRIPT_PATH/docker-compose.yml up --build runner
 
 
 
