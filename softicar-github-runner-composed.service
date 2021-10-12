@@ -1,0 +1,13 @@
+[Unit]
+Description=SoftiCAR GitHub Runner Composed
+After=docker.service
+Requires=docker.service
+
+[Service]
+TimeoutStartSec=0
+Restart=always
+User=softicar
+ExecStart=/home/softicar/com.softicar.github.runner/softicar-github-runner-composed.sh
+
+[Install]
+WantedBy=multi-user.target

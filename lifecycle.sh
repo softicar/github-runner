@@ -47,7 +47,7 @@ unregister_runner() {
   echo "Runner unregistered."
 }
 
-# Adds traps for various signals that could terminate this script, to cleanly unregister the runner.
+# Traps various signals that could terminate this script, to perform cleanup operations.
 # Exits with 128+n for any trapped signal with an ID of n (cf. `kill -l`).
 trap_signals() {
   trap 'unregister_runner; exit 130;' SIGINT
