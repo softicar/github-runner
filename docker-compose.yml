@@ -1,3 +1,7 @@
+# Docker-Compose project definition for SoftiCAR GitHub Runner.
+#
+# Invoked by softicar-github-runner.sh
+#
 # Environment variables:
 #
 # NEXUS_CHECK_INTERVAL
@@ -47,10 +51,7 @@ services:
 
   runner:
     container_name: runner
-    build:
-      context: .                # modify, after stuff was moved to sub-folder
-      dockerfile: Dockerfile    # TODO try to omit
-#     args:                     # TODO add if necessary
+    build: ./runner
     image: softicar/softicar-github-runner
     depends_on:
       nexus:

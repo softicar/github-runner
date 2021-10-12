@@ -1,3 +1,5 @@
+# Dockerfile for the containerized, docker-in-docker-enabled SoftiCAR spin of the GitHub Actions Runner.
+
 # Use the Ubuntu base image provided by the "sysbox" vendor, "nestybox"
 # see https://github.com/nestybox/dockerfiles/blob/master/ubuntu-focal-systemd-docker/Dockerfile
 FROM nestybox/ubuntu-focal-systemd-docker
@@ -58,8 +60,8 @@ RUN curl -Ls -o /usr/local/bin/dumb-init https://github.com/Yelp/dumb-init/relea
     && chmod +x /usr/local/bin/dumb-init
 
 # Get stuff going
-COPY lifecycle.sh /usr/local/bin/
-RUN chmod +x /usr/local/bin/lifecycle.sh
+COPY startup.sh /usr/local/bin/
+RUN chmod +x /usr/local/bin/startup.sh
 USER softicar
 ENTRYPOINT ["/usr/local/bin/dumb-init", "-v", "--"]
-CMD ["lifecycle.sh"]
+CMD ["startup.sh"]

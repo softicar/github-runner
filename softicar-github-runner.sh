@@ -1,5 +1,9 @@
 #!/bin/bash
 
+# Lifecycle control script for the Docker-Compose project of SoftiCAR GitHub Runner.
+#
+# Invoked by softicar-github-runner.service
+
 # Define Constants
 COMPOSE_DOWN_TIMEOUT=120
 SCRIPT_PATH=$(cd `dirname $0` && pwd)
