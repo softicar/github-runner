@@ -1,6 +1,4 @@
 # Environment variables:
-# - NEXUS_PROXY_PORT
-#     TODO describe
 # - NEXUS_HEALTH_INTERVAL
 #     TODO describe
 # - NEXUS_HEALTH_RETRIES
@@ -22,11 +20,11 @@ services:
     container_name: nexus
     image: sonatype/nexus3:${NEXUS_VERSION:-3.34.1}
     ports:
-      - ${NEXUS_PROXY_PORT:-8081}
+      - "8081:8081"
     volumes:
       - "nexus-data:/nexus-data"
     healthcheck:
-      test: ["CMD", "curl", "-f", "http://127.0.0.1:${NEXUS_PROXY_PORT:-8081}/"]
+      test: ["CMD", "curl", "-f", "http://127.0.0.1:8081/"]
       start_period: ${NEXUS_HEALTH_START_PERIOD:-90s}
       interval: ${NEXUS_HEALTH_INTERVAL:-10s}
       retries: ${NEXUS_HEALTH_RETRIES:-9}
