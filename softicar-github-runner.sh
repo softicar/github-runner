@@ -1,11 +1,13 @@
 #!/bin/bash
 
+# Define Constants
+COMPOSE_DOWN_TIMEOUT=120
 SCRIPT_PATH=$(cd `dirname $0` && pwd)
 
 # Unregisters the previously registered runner.
 teardown() {
   echo "Shutting down containers..."
-  docker-compose -f $SCRIPT_PATH/docker-compose.yml down --timeout 120
+  docker-compose -f $SCRIPT_PATH/docker-compose.yml down --timeout $COMPOSE_DOWN_TIMEOUT
   echo "Containers were shut down."
 }
 
@@ -18,7 +20,7 @@ trap_signals() {
 
 # -------- Main Script -------- #
 
-# Check prerequisites
+# Check Prerequisites
 [[ ! $(which docker) ]] && { echo "Fatal: Docker is not installed."; exit 1; }
 docker ps > /dev/null 2>&1 || { echo "Fatal: User ${USER} has insufficient permissions for docker commands."; exit 1; }
 [[ ! $(which docker-compose) ]] && { echo "Fatal: Docker-Compose is not installed."; exit 1; }
@@ -26,21 +28,9 @@ docker ps > /dev/null 2>&1 || { echo "Fatal: User ${USER} has insufficient permi
 
 trap_signals
 
-# docker-compose -f $SCRIPT_PATH/docker-compose.yml up -d nexus && \
-# docker-compose -f $SCRIPT_PATH/docker-compose.yml up --build --force-recreate runner
-
-
-
+# TODO this might print an error message - beautify that
+# TODO pass the .yml file here?
 docker-compose rm -f runner
+
 docker-compose -f $SCRIPT_PATH/docker-compose.yml up -d nexus && \
 docker-compose -f $SCRIPT_PATH/docker-compose.yml up --build runner
-
-
-
-
-
-
-# TODO if the above does not cut it, try this:
-# docker-compose rm -sv runner && \
-# docker-compose up --no-deps -d nexus && \
-# docker-compose up --no-deps --build runner
