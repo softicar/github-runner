@@ -32,9 +32,10 @@ docker ps > /dev/null 2>&1 || { echo "Fatal: User ${USER} has insufficient permi
 
 trap_signals
 
+# Remove the old "runner" before (re-)starting it, to reset its content.
 # TODO this might print an error message - beautify that
-# TODO pass the .yml file here?
-docker-compose rm -f runner
+docker-compose -f $SCRIPT_PATH/docker-compose.yml rm -f runner
 
+# Make sure that "nexus" gets or remains started, and that "runner" gets (re-)started
 docker-compose -f $SCRIPT_PATH/docker-compose.yml up -d nexus && \
 docker-compose -f $SCRIPT_PATH/docker-compose.yml up --build runner
