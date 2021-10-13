@@ -1,20 +1,12 @@
-# A systemd service that keeps the ephemeral SoftiCAR GitHub Runner alive.
-# 
 # Install with:
 #   sudo install -m 644 softicar-github-runner.service /etc/systemd/system/
 #   sudo systemctl daemon-reload
 #   sudo systemctl enable softicar-github-runner
-# Start with:
-#   sudo systemctl start softicar-github-runner
-# Stop with:
-#   sudo systemctl stop softicar-github-runner
-# See live logs with:
-#   journalctl -f -u softicar-github-runner --no-hostname --no-tail
-#
-# TODO add a simple installer for this service, and update README.me accordingly
+# 
+# TODO add a simple installer for this service, and update README.md accordingly
 
 [Unit]
-Description=SoftiCAR GitHub Runner Container
+Description=SoftiCAR GitHub Runner
 After=docker.service
 Requires=docker.service
 
@@ -22,7 +14,7 @@ Requires=docker.service
 TimeoutStartSec=0
 Restart=always
 User=softicar
-ExecStart=/home/softicar/softicar-github-runner/softicar-github-runner.sh
+ExecStart=/home/softicar/com.softicar.github.runner/softicar-github-runner.sh
 
 [Install]
 WantedBy=multi-user.target

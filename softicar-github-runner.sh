@@ -1,24 +1,41 @@
 #!/bin/bash
 
-# Main startup script of the SoftiCAR GitHub Runner.
-# Should be invoked by a systemd service.
+# Lifecycle control script for the Docker-Compose project of SoftiCAR GitHub Runner.
+#
+# Invoked by softicar-github-runner.service
 
-BUILD_PROPERTIES_FILE="/home/${USER}/.softicar/build.properties"
-CONTAINER_ENV_FILE="/home/${USER}/.softicar/softicar-github-runner.env"
-IMAGE_NAME="softicar/softicar-github-runner"
+# Define Constants
+COMPOSE_DOWN_TIMEOUT=120
+SCRIPT_PATH=$(cd `dirname $0` && pwd)
 
-# Check prerequisites
-[[ ! -f $BUILD_PROPERTIES_FILE ]] && { echo "Fatal: $BUILD_PROPERTIES_FILE not found."; exit 1; }
-[[ ! -f $CONTAINER_ENV_FILE ]] && { echo "Fatal: $CONTAINER_ENV_FILE not found."; exit 1; }
+# Unregisters the previously registered runner.
+teardown() {
+  echo "Shutting down containers..."
+  docker-compose -f $SCRIPT_PATH/docker-compose.yml down --timeout $COMPOSE_DOWN_TIMEOUT
+  echo "Containers were shut down."
+}
+
+# Traps various signals that could terminate this script, to perform cleanup operations.
+# Exits with 128+n for any trapped signal with an ID of n (cf. `kill -l`).
+trap_signals() {
+  trap 'teardown; exit 130;' SIGINT
+  trap 'teardown; exit 143;' SIGTERM
+}
+
+# -------- Main Script -------- #
+
+# Check Prerequisites
 [[ ! $(which docker) ]] && { echo "Fatal: Docker is not installed."; exit 1; }
 docker ps > /dev/null 2>&1 || { echo "Fatal: User ${USER} has insufficient permissions for docker commands."; exit 1; }
+[[ ! $(which docker-compose) ]] && { echo "Fatal: Docker-Compose is not installed."; exit 1; }
 [[ ! $(which sysbox-runc) ]] && { echo "Fatal: The 'sysbox' Docker runc is not installed."; exit 1; }
 
-# Start the container
-docker run \
-  --name=runner \
-  --rm \
-  --runtime sysbox-runc \
-  --env-file=$CONTAINER_ENV_FILE \
-  --mount type=bind,readonly,src=$BUILD_PROPERTIES_FILE,dst=$BUILD_PROPERTIES_FILE \
-  $IMAGE_NAME
+trap_signals
+
+# Remove the old "runner" before (re-)starting it, to reset its content.
+# TODO this might print an error message - beautify that
+docker-compose -f $SCRIPT_PATH/docker-compose.yml rm -f runner
+
+# Make sure that "nexus" gets or remains started, and that "runner" gets (re-)started
+docker-compose -f $SCRIPT_PATH/docker-compose.yml up -d nexus && \
+docker-compose -f $SCRIPT_PATH/docker-compose.yml up --build runner
