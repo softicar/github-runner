@@ -6,21 +6,20 @@ SERVICE_FILE=softicar-github-runner.service
 SERVICE_TEMPLATE=softicar-github-runner.service-template
 SERVICE_SCRIPT_PATH=$SELF_PATH/softicar-github-runner.sh
 SERVICE_FILE_DESTINATION=/etc/systemd/system/$SERVICE_FILE
-SERVICE_USER=$USER
 
 function service_install {
   if [[ ! -f $SERVICE_FILE_DESTINATION ]]; then
-    [[ $(whoami) != 'root' ]] || { echo "Fatal: The service must not be installed as root."; exit 1; }
     [[ -f $SERVICE_TEMPLATE ]] || { echo "Fatal: Could not find the service template at $SERVICE_TEMPLATE"; exit 1; }
     [[ -f $SERVICE_SCRIPT_PATH ]] || { echo "Fatal: Could not find the service script at $SERVICE_SCRIPT_PATH"; exit 1; }
 
     echo "Installing service..."
+    prompt_for_service_user
     SERVICE_FILE_CONTENT=$(cat $SERVICE_TEMPLATE | sed "s:%%SERVICE_USER%%:${SERVICE_USER}:" | sed "s:%%SERVICE_SCRIPT_PATH%%:${SERVICE_SCRIPT_PATH}:")
     sudo bash -c "echo '$SERVICE_FILE_CONTENT' > $SERVICE_FILE_DESTINATION" && \
     sudo chmod 644 $SERVICE_FILE_DESTINATION && \
     sudo systemctl daemon-reload && \
     sudo systemctl enable $SERVICE_FILE > /dev/null 2>&1 && \
-    echo "Service installed."
+    echo "Service installed and enabled."
   else
     echo "Service is already installed. Nothing to do."; exit 0;
   fi
@@ -62,6 +61,20 @@ function assert_installed {
   [[ -f $SERVICE_FILE_DESTINATION ]] || { echo "Service is not installed. Install it with: $0 install"; exit 1; }
 }
 
+function prompt_for_service_user() {
+  while true; do
+    read -p "Enter the service user [$USER]: " SERVICE_USER
+    SERVICE_USER=${SERVICE_USER:-$USER}
+    if [[ $SERVICE_USER = 'root' ]]; then
+      echo "The service must not be run as root."
+    elif ! `id $SERVICE_USER > /dev/null 2>&1`; then
+      echo "User '$SERVICE_USER' does not exist."
+    else
+      break
+    fi
+  done
+}
+
 function print_help {
   echo "SoftiCAR GitHub Runner - Systemd Service Management Script"
   echo ""
@@ -69,7 +82,7 @@ function print_help {
   echo "  $0 [COMMAND]"
   echo ""
   echo "Commands:"
-  echo "  install          Install the service (will be enabled by default)"
+  echo "  install          Install the service, and enable it"
   echo "  logs             Show the service logs"
   echo "                   Forwards tailing parameters to 'journalctl', e.g. '-f' or '-u'"
   echo "  start            Start the service"

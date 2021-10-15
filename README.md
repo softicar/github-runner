@@ -52,8 +52,9 @@ The following things must be available or installed:
 1. Clone this repository.
 1. Copy `softicar-github-runner.env-example` to `/home/softicar/.softicar/softicar-github-runner.env`
    - Read the comments in that file, and define the environment variables.
-1. Create `/home/softicar/.softicar/build.properties`
-   - In that file, set `com.softicar.ivy.repository.url` to point to an Ivy repository that provides the [SoftiCAR Gradle Plugins](https://github.com/Prevent-DEV/com.softicar.gradle.plugins).
+1. Create `/home/softicar/.softicar/build.properties`. In that file:
+   - Set `com.softicar.ivy.repository.url` to point to an Ivy repository that provides the [SoftiCAR Gradle Plugins](https://github.com/Prevent-DEV/com.softicar.gradle.plugins).
+   - **TODO** describe setting the `...maven.proxies` property as soon as caching is ready for prime time
 1. Install and start the systemd service:
 
        ./service.sh install
