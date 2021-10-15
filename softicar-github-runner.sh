@@ -4,7 +4,7 @@
 #
 # Invoked by softicar-github-runner.service
 
-# Define Constants
+# Constants
 COMPOSE_DOWN_TIMEOUT=120
 SCRIPT_PATH=$(cd `dirname $0` && pwd)
 
@@ -22,13 +22,16 @@ trap_signals() {
   trap 'teardown; exit 143;' SIGTERM
 }
 
-# -------- Main Script -------- #
+check_prerequisites() {
+  [[ ! $(which docker) ]] && { echo "Fatal: Docker is not installed."; exit 1; }
+  docker ps > /dev/null 2>&1 || { echo "Fatal: User ${USER} has insufficient permissions for docker commands."; exit 1; }
+  [[ ! $(which docker-compose) ]] && { echo "Fatal: Docker-Compose is not installed."; exit 1; }
+  [[ ! $(which sysbox-runc) ]] && { echo "Fatal: The 'sysbox' Docker runc is not installed."; exit 1; }
+}
 
-# Check Prerequisites
-[[ ! $(which docker) ]] && { echo "Fatal: Docker is not installed."; exit 1; }
-docker ps > /dev/null 2>&1 || { echo "Fatal: User ${USER} has insufficient permissions for docker commands."; exit 1; }
-[[ ! $(which docker-compose) ]] && { echo "Fatal: Docker-Compose is not installed."; exit 1; }
-[[ ! $(which sysbox-runc) ]] && { echo "Fatal: The 'sysbox' Docker runc is not installed."; exit 1; }
+# -------------------------------- Main Script -------------------------------- #
+
+check_prerequisites
 
 trap_signals
 

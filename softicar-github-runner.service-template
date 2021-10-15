@@ -1,0 +1,17 @@
+# A systemd service that manages the SoftiCAR GitHub Runner lifecycle.
+#
+# Install with: ./service.sh install
+
+[Unit]
+Description=SoftiCAR GitHub Runner
+After=docker.service
+Requires=docker.service
+
+[Service]
+TimeoutStartSec=0
+Restart=always
+User=%%SERVICE_USER%%
+ExecStart=%%SERVICE_SCRIPT_PATH%%
+
+[Install]
+WantedBy=multi-user.target
