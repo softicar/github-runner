@@ -1,6 +1,12 @@
 #!/bin/bash
 
-# Constants
+# SoftiCAR GitHub Runner - Systemd Service Management Script
+#
+# Facilitates installation, administration and uninstallation of the
+# systemd service that manages the SoftiCAR GitHub Runner lifecycle.
+#
+# Run without parameters for a list of available commands.
+
 SELF_PATH=$(cd `dirname $0` && pwd)
 SERVICE_FILE=softicar-github-runner.service
 SERVICE_TEMPLATE=softicar-github-runner.service-template
@@ -9,8 +15,8 @@ SERVICE_FILE_DESTINATION=/etc/systemd/system/$SERVICE_FILE
 
 function service_install {
   if [[ ! -f $SERVICE_FILE_DESTINATION ]]; then
-    [[ -f $SERVICE_TEMPLATE ]] || { echo "Fatal: Could not find the service template at $SERVICE_TEMPLATE"; exit 1; }
-    [[ -f $SERVICE_SCRIPT_PATH ]] || { echo "Fatal: Could not find the service script at $SERVICE_SCRIPT_PATH"; exit 1; }
+    [[ -f $SERVICE_TEMPLATE ]] || { echo "FATAL: Could not find the service template at $SERVICE_TEMPLATE"; exit 1; }
+    [[ -f $SERVICE_SCRIPT_PATH ]] || { echo "FATAL: Could not find the service script at $SERVICE_SCRIPT_PATH"; exit 1; }
 
     echo "Installing service..."
     prompt_for_service_user
@@ -65,12 +71,9 @@ function prompt_for_service_user() {
   while true; do
     read -p "Enter the service user [$USER]: " SERVICE_USER
     SERVICE_USER=${SERVICE_USER:-$USER}
-    if [[ $SERVICE_USER = 'root' ]]; then
-      echo "The service must not be run as root."
-    elif ! `id $SERVICE_USER > /dev/null 2>&1`; then
-      echo "User '$SERVICE_USER' does not exist."
-    else
-      break
+    if [[ $SERVICE_USER = 'root' ]]; then echo "The service must not be run as root."
+    elif ! `id $SERVICE_USER > /dev/null 2>&1`; then echo "User '$SERVICE_USER' does not exist."
+    else break
     fi
   done
 }
