@@ -13,6 +13,7 @@ DOCKER_COMPOSE_TARGET=/usr/bin/docker-compose
 SYSBOX_VERSION=0.4.1
 SYSBOX_UBUNTU_RELEASE=focal
 REBOOT_HINT=false
+SUPPORTED_UBUNTU_RELEASES="focal"
 
 function install_components() {
   if [[ -n $TAILING_PARAMS ]]; then
@@ -261,6 +262,19 @@ function print_help {
   echo "  docker-compose              the Docker-Compose command"
   echo "  gh                          the GitHub CLI command-line client"
   echo "  sysbox                      the \"Sysbox\" Docker runtime"
+
+  print_release_warning_if_necessary
+}
+
+function print_release_warning_if_necessary {
+  SYSTEM_RELEASE=$(lsb_release -cs)
+  if [[ ! $SUPPORTED_UBUNTU_RELEASES == *"$SYSTEM_RELEASE"* ]]; then
+    echo ""
+    echo "WARNING:"
+    echo "The following Ubuntu releases are supported: $SUPPORTED_UBUNTU_RELEASES"
+    echo "This system is based upon: $SYSTEM_RELEASE"
+    echo "The setup script is not guaranteed to work properly on this system."
+  fi
 }
 
 # -------------------------------- Main Script -------------------------------- #
