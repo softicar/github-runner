@@ -69,9 +69,9 @@ function assert_installed {
 
 function prompt_for_service_user() {
   while true; do
-    read -p "Enter the service user [$USER]: " SERVICE_USER
-    SERVICE_USER=${SERVICE_USER:-$USER}
-    if [[ $SERVICE_USER = 'root' ]]; then echo "The service must not be run as root."
+    read -p "Enter the service user [$USER]: "
+    SERVICE_USER=${REPLY:-$USER}
+    if [[ $SERVICE_USER = 'root' ]]; then echo "Please enter a non-root user."
     elif ! `id $SERVICE_USER > /dev/null 2>&1`; then echo "User '$SERVICE_USER' does not exist."
     else break
     fi
