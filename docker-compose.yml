@@ -4,34 +4,40 @@
 #
 # Environment variables:
 #
+# RUNNER_ENV_FILE
+#   The absolute path to the "softicar-github-runner.env" file on the host.
+#   Mandatory; default: (undefined)
+#
+# RUNNER_VERSION_OVERRIDE
+#   Enforces the "runner" service/image to be built with the specified version of GitHub Actions Runner.
+#   If undefined, the latest available version will be used.
+#   Optional; default: (undefined)
+#
 # NEXUS_CHECK_INTERVAL
 #   The polling interval for the "nexus" service health check.
-#   Default: "5s"
+#   Optional; default: "5s"
 #
 # NEXUS_CHECK_RETRIES
 #   The number of retries for the "nexus" service health check.
-#   Default: "20"
+#   Optional; default: "20"
 #
 # NEXUS_CHECK_START_PERIOD
 #   The time to wait until the first "nexus" service health check.
-#   Default: "80s"
+#   Optional; default: "80s"
 #
 # NEXUS_CHECK_TIMEOUT
 #   The amount of time after which an individual "nexus" service health check is considered failed.
 #   Should be smaller than NEXUS_CHECK_INTERVAL.
-#   Default: "4s"
+#   Optional; default: "4s"
 #
 # NEXUS_VERSION
 #   The version of the "sonatype/nexus3" image.
-#   Default: "3.34.1"
+#   Optional; default: "3.34.1"
 #
 # RUNNER_BUILD_PROPERTIES_FILE
 #   The absolute path to the "build.properties" file on the host.
-#   Default: "/home/softicar/.softicar/build.properties"
-#
-# RUNNER_ENV_FILE
-#   The absolute path to the "softicar-github-runner.env" file on the host.
-#   Default: "/home/softicar/.softicar/softicar-github-runner.env"
+#   Optional; default: "/home/softicar/.softicar/build.properties"
+#   TODO remove this. this was only necessary to define access to Ivy repos which we won't use anymore.
 
 version: "3.4"
 services:
@@ -51,19 +57,26 @@ services:
 
   runner:
     container_name: runner
-    build: ./runner
     image: softicar/softicar-github-runner
+    build:
+      context: ./runner
+      # Arguments required at image build time.
+      args:
+        - RUNNER_VERSION_OVERRIDE=${RUNNER_VERSION_OVERRIDE}
+    env_file:
+      # Arguments required at container run time.
+      - ${RUNNER_ENV_FILE}
     depends_on:
       nexus:
         condition: service_healthy
     runtime: sysbox-runc
-    env_file:
-      - ${RUNNER_ENV_FILE:-/home/softicar/.softicar/softicar-github-runner.env}
     volumes:
+    # TODO remove this. this was only necessary to define access to Ivy repos which we won't use anymore.
       - "${RUNNER_BUILD_PROPERTIES_FILE:-/home/softicar/.softicar/build.properties}:/home/softicar/.softicar/build.properties:ro"
     links:
       - nexus
 
 volumes:
+  # A non-prefixed volume that is created if necessary.
   nexus-data:
-    external: true
+    name: nexus-data

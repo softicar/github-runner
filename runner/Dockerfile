@@ -4,13 +4,6 @@
 # see https://github.com/nestybox/dockerfiles/blob/master/ubuntu-focal-systemd-docker/Dockerfile
 FROM nestybox/ubuntu-focal-systemd-docker
 
-# Define versions
-ARG ADOPT_OPEN_JDK_VERSION_DIR=15.0.2+7
-ARG ADOPT_OPEN_JDK_VERSION_FILE=15.0.2_7
-ARG DOCKER_COMPOSE_VERSION=1.27.4
-ARG DUMB_INIT_VERSION=1.2.2
-ARG GITHUB_RUNNER_VERSION=2.283.3
-
 # Add "softicar" user, and add them to required groups.
 # Remove default admin user (as defined in https://github.com/nestybox/dockerfiles/blob/master/ubuntu-focal-systemd/Dockerfile)
 RUN useradd -m softicar \
@@ -21,6 +14,8 @@ RUN useradd -m softicar \
 
 # Install JDK
 # see https://github.com/AdoptOpenJDK
+ARG ADOPT_OPEN_JDK_VERSION_DIR=15.0.2+7
+ARG ADOPT_OPEN_JDK_VERSION_FILE=15.0.2_7
 WORKDIR /opt
 RUN curl -Ls -o jdk.tar.gz https://github.com/AdoptOpenJDK/openjdk15-binaries/releases/download/jdk-${ADOPT_OPEN_JDK_VERSION_DIR}/OpenJDK15U-jdk_x64_linux_hotspot_${ADOPT_OPEN_JDK_VERSION_FILE}.tar.gz \
     && tar xzf ./jdk.tar.gz \
@@ -42,22 +37,29 @@ RUN apt-get update \
 
 # Install docker-compose
 # see https://github.com/docker/compose/
+ARG DOCKER_COMPOSE_VERSION=1.27.4
 RUN curl -Ls -o /usr/local/bin/docker-compose https://github.com/docker/compose/releases/download/${DOCKER_COMPOSE_VERSION}/docker-compose-Linux-x86_64 \
     && chmod +x /usr/local/bin/docker-compose
 
+# Install dumb-init, for subsequent use as entrypoint
+# see https://github.com/Yelp/dumb-init
+ARG DUMB_INIT_VERSION=1.2.2
+RUN curl -Ls -o /usr/local/bin/dumb-init https://github.com/Yelp/dumb-init/releases/download/v${DUMB_INIT_VERSION}/dumb-init_${DUMB_INIT_VERSION}_x86_64 \
+    && chmod +x /usr/local/bin/dumb-init
+
 # Install GitHub Actions Runner
 # see https://github.com/actions/runner
+ARG RUNNER_VERSION_OVERRIDE
 WORKDIR /runner
-RUN curl -Ls -o runner.tar.gz https://github.com/actions/runner/releases/download/v${GITHUB_RUNNER_VERSION}/actions-runner-linux-x64-${GITHUB_RUNNER_VERSION}.tar.gz \
+RUN curl -Ls -o runner.tar.gz $( \
+      [ $RUNNER_VERSION_OVERRIDE ] \
+      && echo "https://github.com/actions/runner/releases/download/v${RUNNER_VERSION_OVERRIDE}/actions-runner-linux-x64-${RUNNER_VERSION_OVERRIDE}.tar.gz" \
+      || echo $(curl -Ls https://api.github.com/repos/actions/runner/releases/latest | grep -oP '(?<="browser_download_url": ")[^"]*' | grep linux-x64) \
+    ) \
     && tar xzf ./runner.tar.gz \
     && rm ./runner.tar.gz \
     && ./bin/installdependencies.sh \
     && rm -rf /var/lib/apt/lists/*
-
-# Install dumb-init, for subsequent use as entrypoint
-# see https://github.com/Yelp/dumb-init
-RUN curl -Ls -o /usr/local/bin/dumb-init https://github.com/Yelp/dumb-init/releases/download/v${DUMB_INIT_VERSION}/dumb-init_${DUMB_INIT_VERSION}_x86_64 \
-    && chmod +x /usr/local/bin/dumb-init
 
 # Get stuff going
 COPY startup.sh /usr/local/bin/

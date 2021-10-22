@@ -11,6 +11,7 @@ SELF_PATH=$(cd `dirname $0` && pwd)
 SERVICE_FILE=softicar-github-runner.service
 SERVICE_TEMPLATE=softicar-github-runner.service-template
 SERVICE_SCRIPT_PATH=$SELF_PATH/softicar-github-runner.sh
+SERVICE_SCRIPT_ENVIRONMENT_FILE=softicar-github-runner.env
 SERVICE_FILE_DESTINATION=/etc/systemd/system/$SERVICE_FILE
 
 function service_install {
@@ -20,12 +21,13 @@ function service_install {
 
     echo "Installing service..."
     prompt_for_service_user
-    SERVICE_FILE_CONTENT=$(cat $SERVICE_TEMPLATE | sed "s:%%SERVICE_USER%%:${SERVICE_USER}:" | sed "s:%%SERVICE_SCRIPT_PATH%%:${SERVICE_SCRIPT_PATH}:")
+    RUNNER_ENV_FILE="/home/${SERVICE_USER}/.softicar/${SERVICE_SCRIPT_ENVIRONMENT_FILE}"
+    SERVICE_FILE_CONTENT=$(cat $SERVICE_TEMPLATE | sed "s:%%SERVICE_USER%%:${SERVICE_USER}:" | sed "s:%%SERVICE_SCRIPT_PATH%%:${SERVICE_SCRIPT_PATH}:" | sed "s:%%RUNNER_ENV_FILE%%:${RUNNER_ENV_FILE}:")
     sudo bash -c "echo '$SERVICE_FILE_CONTENT' > $SERVICE_FILE_DESTINATION" && \
     sudo chmod 644 $SERVICE_FILE_DESTINATION && \
     sudo systemctl daemon-reload && \
     sudo systemctl enable $SERVICE_FILE > /dev/null 2>&1 && \
-    echo "Service installed and enabled."
+    echo "Service installed and enabled. Start it with: $0 start"
   else
     echo "Service is already installed. Nothing to do."; exit 0;
   fi
@@ -34,7 +36,7 @@ function service_install {
 function service_uninstall {
   if [[ -f $SERVICE_FILE_DESTINATION ]]; then
     echo "Uninstalling service..."
-    sudo systemctl disable $SERVICE_FILE > /dev/null 2>&1 && \
+    sudo systemctl disable --now $SERVICE_FILE > /dev/null 2>&1 && \
     sudo rm $SERVICE_FILE_DESTINATION && \
     sudo systemctl daemon-reload && \
     echo "Service uninstalled."
@@ -50,12 +52,16 @@ function service_status {
 
 function service_start {
   assert_installed
-  sudo systemctl start $SERVICE_FILE
+  echo "Starting service..."
+  sudo systemctl start $SERVICE_FILE && \
+  echo "Service started."
 }
 
 function service_stop {
   assert_installed
-  sudo systemctl stop $SERVICE_FILE
+  echo "Stopping service..."
+  sudo systemctl stop $SERVICE_FILE && \
+  echo "Service stopped."
 }
 
 function service_logs {
