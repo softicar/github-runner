@@ -2,42 +2,46 @@
 #
 # Invoked by softicar-github-runner.sh
 #
-# Environment variables:
+# -------- Mandatory Environment Variables --------
 #
 # RUNNER_ENV_FILE
 #   The absolute path to the "softicar-github-runner.env" file on the host.
-#   Mandatory; default: (undefined)
+#   Mandatory; via environment variable
+#   Default: (undefined)
+#
+# -------- Optional Environment Variables --------
 #
 # RUNNER_VERSION_OVERRIDE
 #   Enforces the "runner" service/image to be built with the specified version of GitHub Actions Runner.
 #   If undefined, the latest available version will be used.
-#   Optional; default: (undefined)
+#   Optional; via softicar-github-runner.env
+#   Default: (undefined)
 #
 # NEXUS_CHECK_INTERVAL
 #   The polling interval for the "nexus" service health check.
-#   Optional; default: "5s"
+#   Optional; via softicar-github-runner.env
+#   Default: "5s"
 #
 # NEXUS_CHECK_RETRIES
 #   The number of retries for the "nexus" service health check.
-#   Optional; default: "20"
+#   Optional; via softicar-github-runner.env
+#   Default: "20"
 #
 # NEXUS_CHECK_START_PERIOD
 #   The time to wait until the first "nexus" service health check.
-#   Optional; default: "80s"
+#   Optional; via softicar-github-runner.env
+#   Default: "80s"
 #
 # NEXUS_CHECK_TIMEOUT
 #   The amount of time after which an individual "nexus" service health check is considered failed.
 #   Should be smaller than NEXUS_CHECK_INTERVAL.
-#   Optional; default: "4s"
+#   Optional; via softicar-github-runner.env
+#   Default: "4s"
 #
 # NEXUS_VERSION
 #   The version of the "sonatype/nexus3" image.
-#   Optional; default: "3.34.1"
-#
-# RUNNER_BUILD_PROPERTIES_FILE
-#   The absolute path to the "build.properties" file on the host.
-#   Optional; default: "/home/softicar/.softicar/build.properties"
-#   TODO remove this. this was only necessary to define access to Ivy repos which we won't use anymore.
+#   Optional; via softicar-github-runner.env
+#   Default: "3.34.1"
 
 version: "3.4"
 services:
@@ -70,9 +74,6 @@ services:
       nexus:
         condition: service_healthy
     runtime: sysbox-runc
-    volumes:
-    # TODO remove this. this was only necessary to define access to Ivy repos which we won't use anymore.
-      - "${RUNNER_BUILD_PROPERTIES_FILE:-/home/softicar/.softicar/build.properties}:/home/softicar/.softicar/build.properties:ro"
     links:
       - nexus
 
