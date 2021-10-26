@@ -85,7 +85,7 @@ Because the Runner containers are ephemeral, ... **TODO** describe how we deal w
 
 ## 5 Contributing
 
-Check out our [contributing](CONTRIBUTING.md) file to see how you can take part in developing this project.
+Please read the [contribution guidelines](CONTRIBUTING.md) for this repository and keep our [code of conduct](CODE_OF_CONDUCT.md) in mind.
 
 ## 6 Related Projects
 
