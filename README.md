@@ -83,7 +83,11 @@ The following things are required to set up a SoftiCAR GitHub Runner:
 
 Because the Runner containers are ephemeral, ... **TODO** describe how we deal with constant cache wipes
 
-## 5 Related Projects
+## 5 Contributing
+
+Please read the [contribution guidelines](CONTRIBUTING.md) for this repository and keep our [code of conduct](CODE_OF_CONDUCT.md) in mind.
+
+## 6 Related Projects
 
 - [Docker](https://docs.docker.com/engine/install/ubuntu/)
 - [Docker-Compose](https://github.com/docker/compose/releases)
