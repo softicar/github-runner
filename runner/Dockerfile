@@ -1,4 +1,4 @@
-# Dockerfile for the containerized, docker-in-docker-enabled SoftiCAR spin of the GitHub Actions Runner.
+# Dockerfile for the docker-in-docker-enabled SoftiCAR spin of GitHub Actions Runner.
 
 # Use the Ubuntu base image provided by the "sysbox" vendor, "nestybox"
 # see https://github.com/nestybox/dockerfiles/blob/master/ubuntu-focal-systemd-docker/Dockerfile
@@ -61,9 +61,11 @@ RUN curl -Ls -o runner.tar.gz $( \
     && ./bin/installdependencies.sh \
     && rm -rf /var/lib/apt/lists/*
 
-# Get stuff going
+# Copy the startup script
 COPY startup.sh /usr/local/bin/
 RUN chmod +x /usr/local/bin/startup.sh
+
+# Get stuff going
 USER softicar
 ENTRYPOINT ["/usr/local/bin/dumb-init", "-v", "--"]
 CMD ["startup.sh"]

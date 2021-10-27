@@ -1,11 +1,9 @@
 #!/bin/bash
 
-# TODO implement an auto-kill after runner executes a job for 15 minutes, or so. your crypto miners shall not pass!
-
 # Validate environment variables
-[[ -z "$GITHUB_PERSONAL_TOKEN" ]] && { echo "Fatal: GITHUB_PERSONAL_TOKEN must not be empty." ; exit 1; }
-[[ -z "$GITHUB_REPOSITORY" ]] && { echo "Fatal: GITHUB_REPOSITORY must not be empty." ; exit 1; }
-[[ -z "$GITHUB_RUNNER_NAME" ]] && { echo "Fatal: GITHUB_RUNNER_NAME must not be empty." ; exit 1; }
+[[ -z "$GITHUB_PERSONAL_TOKEN" ]] && { echo "FATAL: GITHUB_PERSONAL_TOKEN must not be empty." ; exit 1; }
+[[ -z "$GITHUB_REPOSITORY" ]] && { echo "FATAL: GITHUB_REPOSITORY must not be empty." ; exit 1; }
+[[ -z "$GITHUB_RUNNER_NAME" ]] && { echo "FATAL: GITHUB_RUNNER_NAME must not be empty." ; exit 1; }
 
 AUTH_URL="https://api.github.com/repos/${GITHUB_REPOSITORY}/actions/runners/registration-token"
 REGISTRATION_URL="https://github.com/${GITHUB_REPOSITORY}"
@@ -21,7 +19,7 @@ generate_runner_token() {
     echo "Failed to generate runner token: ${TOKEN_RESPONSE}"
     exit 1
   fi
-  
+
   echo "Runner token generated."
 }
 

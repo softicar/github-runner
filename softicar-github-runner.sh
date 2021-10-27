@@ -21,19 +21,19 @@ teardown() {
 }
 
 # Traps various signals that could terminate this script, to perform cleanup operations.
-# Exits with 128+n for any trapped signal with an ID of n (cf. `kill -l`).
 trap_signals() {
   trap 'teardown;' SIGINT
   trap 'teardown;' SIGTERM
 }
 
+# Checks prerequisites that must be fulfilled before anything else is done.
 check_prerequisites() {
   [[ ! $(which docker) ]] && { echo "FATAL: Docker is not installed."; exit 1; }
   docker ps > /dev/null 2>&1 || { echo "FATAL: User ${USER} has insufficient permissions for docker commands."; exit 1; }
   [[ ! $(which docker-compose) ]] && { echo "FATAL: Docker-Compose is not installed."; exit 1; }
   [[ ! $(which sysbox-runc) ]] && { echo "FATAL: The 'sysbox' Docker runc is not installed."; exit 1; }
   [ -z $RUNNER_ENV_FILE ] && { echo "FATAL: 'RUNNER_ENV_FILE' must be defined."; exit 1; }
-  [ ! -f $RUNNER_ENV_FILE ] && { echo "FATAL: Failed to access RUNNER_ENV_FILE=$RUNNER_ENV_FILE (no such file)"; exit 1; }
+  [ ! -f $RUNNER_ENV_FILE ] && { echo "FATAL: Failed to access RUNNER_ENV_FILE=${RUNNER_ENV_FILE} (no such file)"; exit 1; }
 }
 
 # -------------------------------- Main Script -------------------------------- #
