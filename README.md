@@ -107,7 +107,7 @@ The following things are required to set up a SoftiCAR GitHub Runner:
 
 As a result of the sandboxing approach, the runner containers are disposed after each build, and so are their internal caches.
 
-This would result in Docker images, Gradle plugins and Gradle dependencies being downloaded from the internet for every single build, which would be wasteful in terms of bandwidth and time consumption. To avoid those repeated downloads, said build-time dependencies need to be cached locally.
+This would result in Docker images, Gradle plugins and Gradle dependencies being downloaded from the internet for every single build, which would be wasteful in terms of bandwidth and time consumption. To avoid those repeated downloads, said build-time dependencies need to be cached outside the Docker container of the SoftiCAR GitHub Runner.
 
 SoftiCAR GitHub Runner therefore employs [Sonatype Nexus](https://github.com/sonatype/nexus-public) as a persistent pull-through cache proxy, in a separate Docker container.
 
