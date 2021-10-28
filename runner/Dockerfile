@@ -61,6 +61,9 @@ RUN curl -Ls -o runner.tar.gz $( \
     && ./bin/installdependencies.sh \
     && rm -rf /var/lib/apt/lists/*
 
+# Create Docker Config
+RUN echo '{ "insecure-registries" : ["http://nexus:8081/repository/docker-hub/"] }' > /etc/docker/daemon.json
+
 # Copy the startup script
 COPY startup.sh /usr/local/bin/
 RUN chmod +x /usr/local/bin/startup.sh
