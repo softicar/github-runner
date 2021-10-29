@@ -50,6 +50,7 @@ services:
     image: sonatype/nexus3:${NEXUS_VERSION:-3.34.1}
     ports:
       - "8081:8081"
+      - "8123:8123"
     volumes:
       - "nexus-data:/nexus-data"
     healthcheck:
