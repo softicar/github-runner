@@ -47,7 +47,7 @@ function service_uninstall {
 
 function service_status {
   assert_installed
-  sudo systemctl status $SERVICE_FILE
+  systemctl status $SERVICE_FILE
 }
 
 function service_start {
