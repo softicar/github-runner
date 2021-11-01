@@ -213,11 +213,11 @@ function is_running_containers() {
 }
 
 function print_components_status() {
-  echo "COMPONENT             INSTALLED"
-  echo "Docker                $(is_docker_installed && echo 'yes' || echo 'no')"
-  echo "Docker-Compose        $(is_docker_compose_installed && echo 'yes' || echo 'no')"
-  echo "GitHub CLI            $(is_gh_installed && echo 'yes' || echo 'no')"
-  echo "Sysbox                $(is_sysbox_installed && echo 'yes' || echo 'no')"
+  echo "COMPONENT           DESCRIPTION                INSTALLED"
+  echo "docker              Docker Engine              $(is_docker_installed && echo 'yes' || echo 'no')"
+  echo "docker-compose      Docker-Compose Script      $(is_docker_compose_installed && echo 'yes' || echo 'no')"
+  echo "gh                  GitHub CLI                 $(is_gh_installed && echo 'yes' || echo 'no')"
+  echo "sysbox              Sysbox Docker Runtime      $(is_sysbox_installed && echo 'yes' || echo 'no')"
 }
 
 function print_reboot_hint_if_necessary() {
