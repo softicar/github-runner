@@ -10,6 +10,7 @@ Requires=docker.service
 [Service]
 TimeoutStartSec=0
 Restart=always
+RestartSec=10
 User=%%SERVICE_USER%%
 Environment="RUNNER_ENV_FILE=%%RUNNER_ENV_FILE%%"
 ExecStart=%%SERVICE_SCRIPT_PATH%%
