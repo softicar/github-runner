@@ -9,7 +9,7 @@ FROM nestybox/ubuntu-focal-systemd-docker
 RUN useradd -m softicar \
     && usermod -aG sudo softicar \
     && usermod -aG docker softicar \
-    && echo "%sudo   ALL=(ALL:ALL) NOPASSWD:ALL" > /etc/sudoers \
+    && echo "%sudo   ALL= NOPASSWD: /usr/sbin/service docker start" > /etc/sudoers \
     && userdel -r admin
 
 # Install JDK
@@ -60,6 +60,10 @@ RUN curl -Ls -o runner.tar.gz $( \
     && rm ./runner.tar.gz \
     && ./bin/installdependencies.sh \
     && rm -rf /var/lib/apt/lists/*
+
+# Create Docker daemon configuration
+ARG DOCKER_DAEMON_CONFIG='{ "insecure-registries" : ["nexus:8123"], "registry-mirrors": ["http://nexus:8123/"] }'
+RUN mkdir -p /etc/docker/ && echo "$DOCKER_DAEMON_CONFIG" > /etc/docker/daemon.json
 
 # Copy the startup script
 COPY startup.sh /usr/local/bin/

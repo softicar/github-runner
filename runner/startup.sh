@@ -7,8 +7,6 @@
 
 AUTH_URL="https://api.github.com/repos/${GITHUB_REPOSITORY}/actions/runners/registration-token"
 REGISTRATION_URL="https://github.com/${GITHUB_REPOSITORY}"
-DOCKER_DAEMON_CONFIG='{ "insecure-registries" : ["nexus:8123"], "registry-mirrors": ["http://nexus:8123/"] }'
-DOCKER_DAEMON_FILE='/etc/docker/daemon.json'
 
 # Generates a new runner token, using a personal access token.
 generate_runner_token() {
@@ -58,12 +56,7 @@ trap_signals() {
 
 # -------- Main Script -------- #
 
-echo "Starting Docker..."
-sudo mkdir -p `dirname $DOCKER_DAEMON_FILE`
-sudo bash -c "echo '$DOCKER_DAEMON_CONFIG' > $DOCKER_DAEMON_FILE"
 sudo service docker start
-echo "Docker started."
-
 trap_signals
 register_runner
 
