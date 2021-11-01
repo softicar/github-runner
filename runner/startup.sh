@@ -58,12 +58,7 @@ trap_signals() {
 
 # -------- Main Script -------- #
 
-echo "Starting Docker..."
-sudo mkdir -p `dirname $DOCKER_DAEMON_FILE`
-sudo bash -c "echo '$DOCKER_DAEMON_CONFIG' > $DOCKER_DAEMON_FILE"
 sudo service docker start
-echo "Docker started."
-
 trap_signals
 register_runner
 
