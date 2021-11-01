@@ -2,46 +2,41 @@
 #
 # Invoked by softicar-github-runner.sh
 #
-# -------- Mandatory Environment Variables --------
-#
-# RUNNER_ENV_FILE
-#   The absolute path to the "softicar-github-runner.env" file on the host.
-#   Mandatory; via environment variable
-#   Default: (undefined)
-#
-# -------- Optional Environment Variables --------
-#
-# RUNNER_VERSION_OVERRIDE
-#   Enforces the "runner" service/image to be built with the specified version of GitHub Actions Runner.
-#   If undefined, the latest available version will be used.
-#   Optional; via softicar-github-runner.env
-#   Default: (undefined)
+# The following environment variables may optionally be defined via "softicar-github-runner.env":
 #
 # NEXUS_CHECK_INTERVAL
 #   The polling interval for the "nexus" service health check.
-#   Optional; via softicar-github-runner.env
-#   Default: "5s"
 #
 # NEXUS_CHECK_RETRIES
 #   The number of retries for the "nexus" service health check.
-#   Optional; via softicar-github-runner.env
-#   Default: "20"
 #
 # NEXUS_CHECK_START_PERIOD
 #   The time to wait until the first "nexus" service health check.
-#   Optional; via softicar-github-runner.env
-#   Default: "80s"
 #
 # NEXUS_CHECK_TIMEOUT
 #   The amount of time after which an individual "nexus" service health check is considered failed.
-#   Should be smaller than NEXUS_CHECK_INTERVAL.
-#   Optional; via softicar-github-runner.env
-#   Default: "4s"
+#   Must be smaller than NEXUS_CHECK_INTERVAL.
 #
 # NEXUS_VERSION
 #   The version of the "sonatype/nexus3" image.
-#   Optional; via softicar-github-runner.env
-#   Default: "3.34.1"
+#
+# RUNNER_ADOPT_OPEN_JDK_VERSION
+#   The "Adopt OpenJDK" version to use in the runner.
+#
+# RUNNER_DOCKER_COMPOSE_VERSION
+#   The "Docker Compose" version to use in the runner.
+#
+# RUNNER_DOCKER_DAEMON_CONFIG
+#   The content of the "daemon.json" file for the Docker engine in the runner.
+#
+# RUNNER_DUMB_INIT_VERSION
+#   The "Dumb-Init" version to use in the runner.
+#
+# RUNNER_VERSION_OVERRIDE
+#   Explicitly defines the GitHub Actions Runner version with which the runner is built (see https://github.com/actions/runner/releases).
+#   Can be used to downgrade to an older GitHub Actions Runner version.
+#   If undefined, the latest available version will be used.
+#   Undefined by default. Should remain undefined unless absolutely necessary.
 
 version: "3.4"
 services:
@@ -65,12 +60,17 @@ services:
     image: softicar/softicar-github-runner
     build:
       context: ./runner
-      # Arguments required at image build time.
       args:
+        - RUNNER_ADOPT_OPEN_JDK_VERSION=${RUNNER_ADOPT_OPEN_JDK_VERSION:-15.0.2+7}
+        - RUNNER_DOCKER_COMPOSE_VERSION=${RUNNER_DOCKER_COMPOSE_VERSION:-1.27.4}
+        - RUNNER_DUMB_INIT_VERSION=${RUNNER_DUMB_INIT_VERSION:-1.2.2}
         - RUNNER_VERSION_OVERRIDE=${RUNNER_VERSION_OVERRIDE}
-    env_file:
-      # Arguments required at container run time.
-      - ${RUNNER_ENV_FILE}
+    environment:
+      - GITHUB_REPOSITORY=${GITHUB_REPOSITORY}
+      - GITHUB_RUNNER_LABELS=${GITHUB_RUNNER_LABELS}
+      - GITHUB_RUNNER_NAME=${GITHUB_RUNNER_NAME}
+      # TODO this should not be here -- instead, the runner token should be passed
+      - GITHUB_PERSONAL_ACCESS_TOKEN=${GITHUB_PERSONAL_ACCESS_TOKEN}
     depends_on:
       nexus:
         condition: service_healthy

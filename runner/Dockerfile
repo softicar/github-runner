@@ -14,12 +14,12 @@ RUN useradd -m softicar \
 
 # Install JDK
 # see https://github.com/AdoptOpenJDK
-ARG ADOPT_OPEN_JDK_VERSION_DIR=15.0.2+7
-ARG ADOPT_OPEN_JDK_VERSION_FILE=15.0.2_7
+ARG RUNNER_ADOPT_OPEN_JDK_VERSION
 WORKDIR /opt
-RUN curl -Ls -o jdk.tar.gz https://github.com/AdoptOpenJDK/openjdk15-binaries/releases/download/jdk-${ADOPT_OPEN_JDK_VERSION_DIR}/OpenJDK15U-jdk_x64_linux_hotspot_${ADOPT_OPEN_JDK_VERSION_FILE}.tar.gz \
+RUN RUNNER_ADOPT_OPEN_JDK_VERSION_FILE=$(echo $RUNNER_ADOPT_OPEN_JDK_VERSION | sed 's/+/_/') \
+    && curl -Ls -o jdk.tar.gz https://github.com/AdoptOpenJDK/openjdk15-binaries/releases/download/jdk-${RUNNER_ADOPT_OPEN_JDK_VERSION}/OpenJDK15U-jdk_x64_linux_hotspot_${RUNNER_ADOPT_OPEN_JDK_VERSION_FILE}.tar.gz \
     && tar xzf ./jdk.tar.gz \
-    && ln -s jdk-${ADOPT_OPEN_JDK_VERSION_DIR} jdk \
+    && ln -s jdk-${RUNNER_ADOPT_OPEN_JDK_VERSION} jdk \
     && rm ./jdk.tar.gz
 ENV PATH="/opt/jdk/bin:${PATH}"
 
@@ -37,14 +37,14 @@ RUN apt-get update \
 
 # Install docker-compose
 # see https://github.com/docker/compose/
-ARG DOCKER_COMPOSE_VERSION=1.27.4
-RUN curl -Ls -o /usr/local/bin/docker-compose https://github.com/docker/compose/releases/download/${DOCKER_COMPOSE_VERSION}/docker-compose-Linux-x86_64 \
+ARG RUNNER_DOCKER_COMPOSE_VERSION
+RUN curl -Ls -o /usr/local/bin/docker-compose https://github.com/docker/compose/releases/download/${RUNNER_DOCKER_COMPOSE_VERSION}/docker-compose-Linux-x86_64 \
     && chmod +x /usr/local/bin/docker-compose
 
 # Install dumb-init, for subsequent use as entrypoint
 # see https://github.com/Yelp/dumb-init
-ARG DUMB_INIT_VERSION=1.2.2
-RUN curl -Ls -o /usr/local/bin/dumb-init https://github.com/Yelp/dumb-init/releases/download/v${DUMB_INIT_VERSION}/dumb-init_${DUMB_INIT_VERSION}_x86_64 \
+ARG RUNNER_DUMB_INIT_VERSION
+RUN curl -Ls -o /usr/local/bin/dumb-init https://github.com/Yelp/dumb-init/releases/download/v${RUNNER_DUMB_INIT_VERSION}/dumb-init_${RUNNER_DUMB_INIT_VERSION}_x86_64 \
     && chmod +x /usr/local/bin/dumb-init
 
 # Install GitHub Actions Runner
@@ -62,8 +62,8 @@ RUN curl -Ls -o runner.tar.gz $( \
     && rm -rf /var/lib/apt/lists/*
 
 # Create Docker daemon configuration
-ARG DOCKER_DAEMON_CONFIG='{ "insecure-registries" : ["nexus:8123"], "registry-mirrors": ["http://nexus:8123/"] }'
-RUN mkdir -p /etc/docker/ && echo "$DOCKER_DAEMON_CONFIG" > /etc/docker/daemon.json
+ARG RUNNER_DOCKER_DAEMON_CONFIG='{ "insecure-registries" : ["nexus:8123"], "registry-mirrors": ["http://nexus:8123/"] }'
+RUN mkdir -p /etc/docker/ && echo "$RUNNER_DOCKER_DAEMON_CONFIG" > /etc/docker/daemon.json
 
 # Copy the startup script
 COPY startup.sh /usr/local/bin/

@@ -1,7 +1,7 @@
 #!/bin/bash
 
 # Validate environment variables
-[[ -z "$GITHUB_PERSONAL_TOKEN" ]] && { echo "FATAL: GITHUB_PERSONAL_TOKEN must not be empty." ; exit 1; }
+[[ -z "$GITHUB_PERSONAL_ACCESS_TOKEN" ]] && { echo "FATAL: GITHUB_PERSONAL_ACCESS_TOKEN must not be empty." ; exit 1; }
 [[ -z "$GITHUB_REPOSITORY" ]] && { echo "FATAL: GITHUB_REPOSITORY must not be empty." ; exit 1; }
 [[ -z "$GITHUB_RUNNER_NAME" ]] && { echo "FATAL: GITHUB_RUNNER_NAME must not be empty." ; exit 1; }
 
@@ -11,7 +11,7 @@ REGISTRATION_URL="https://github.com/${GITHUB_REPOSITORY}"
 # Generates a new runner token, using a personal access token.
 generate_runner_token() {
   echo "Generating runner token..."
-  TOKEN_RESPONSE=$(curl -sX POST -H "Authorization: token ${GITHUB_PERSONAL_TOKEN}" "${AUTH_URL}")
+  TOKEN_RESPONSE=$(curl -sX POST -H "Authorization: token ${GITHUB_PERSONAL_ACCESS_TOKEN}" "${AUTH_URL}")
   RUNNER_TOKEN=$(echo "${TOKEN_RESPONSE}" | jq .token --raw-output)
 
   if [ "${RUNNER_TOKEN}" == "null" ]
