@@ -36,7 +36,8 @@ function service_install {
 function service_uninstall {
   if [[ -f $SERVICE_FILE_DESTINATION ]]; then
     echo "Uninstalling service..."
-    sudo systemctl disable --now $SERVICE_FILE > /dev/null 2>&1 && \
+    sudo systemctl stop $SERVICE_FILE > /dev/null 2>&1 && \
+    sudo systemctl disable $SERVICE_FILE > /dev/null 2>&1 && \
     sudo rm $SERVICE_FILE_DESTINATION && \
     sudo systemctl daemon-reload && \
     echo "Service uninstalled."
