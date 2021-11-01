@@ -7,8 +7,6 @@
 
 AUTH_URL="https://api.github.com/repos/${GITHUB_REPOSITORY}/actions/runners/registration-token"
 REGISTRATION_URL="https://github.com/${GITHUB_REPOSITORY}"
-DOCKER_DAEMON_CONFIG='{ "insecure-registries" : ["nexus:8123"], "registry-mirrors": ["http://nexus:8123/"] }'
-DOCKER_DAEMON_FILE='/etc/docker/daemon.json'
 
 # Generates a new runner token, using a personal access token.
 generate_runner_token() {
