@@ -5,7 +5,7 @@
 # Invoked by softicar-github-runner.service
 
 # Constants
-COMPOSE_DOWN_TIMEOUT=120
+COMPOSE_DOWN_TIMEOUT=30
 SCRIPT_PATH=$(cd `dirname $0` && pwd)
 
 # Unregisters the previously registered runner.
