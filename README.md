@@ -50,12 +50,7 @@ The following things are required to set up a SoftiCAR GitHub Runner:
 
        sudo apt install git
 
-1. Clone this repository:
-
-       cd ~
-       git clone https://github.com/Prevent-DEV/com.softicar.github.runner.git
-       cd ~/com.softicar.github.runner
-
+1. Clone this repository.
 1. Run the setup script, and install all components (i.e. Docker, Docker-Compose, GitHub CLI, and Sysbox):
 
        ./setup install
