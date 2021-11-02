@@ -97,7 +97,6 @@ function assert_installed {
 # A variable must be given as an argument. The return value is written to that variable.
 function prompt_for_service_user() {
   while true; do
-    echo ""
     read -erp "Enter the service user [$USER]: "
     local REPLY=${REPLY:-$USER}
     if [[ $REPLY = 'root' ]]; then echo "Please enter a non-root user."
@@ -112,7 +111,6 @@ function prompt_for_service_user() {
 # A variable must be given as an argument. The return value is written to that variable.
 function prompt_for_repository() {
   while true; do
-    echo ""
     read -erp "Enter the repository to build (e.g. $REPOSITORY_NAME_EXAMPLE): "
     local REPLY=${REPLY}
     if [[ -z $REPLY ]]; then echo "Please enter a repository."
@@ -127,7 +125,6 @@ function prompt_for_repository() {
 # A variable must be given as an argument. The return value is written to that variable.
 function prompt_for_runner_name() {
   while true; do
-    echo ""
     read -erp "Enter the name of this runner [$RUNNER_NAME_DEFAULT]: "
     local REPLY=${REPLY:-$RUNNER_NAME_DEFAULT}
     if ! [[ $REPLY =~ $RUNNER_NAME_REGEX ]]; then echo "Please enter a runner name that matches the following regex: $RUNNER_NAME_REGEX"
@@ -140,7 +137,6 @@ function prompt_for_runner_name() {
 # Prompts for the labels of the spawned runner.
 # A variable must be given as an argument. The return value is written to that variable.
 function prompt_for_runner_labels() {
-  echo ""
   read -erp "Enter a comma-separated list of labels for this runner [$RUNNER_LABELS_DEFAULT]: "
   local REPLY=${REPLY:-$RUNNER_LABELS_DEFAULT}
   eval $1="'$REPLY'"
@@ -150,8 +146,7 @@ function prompt_for_runner_labels() {
 # A variable must be given as an argument. The return value is written to that variable.
 function prompt_for_personal_access_token() {
   while true; do
-    read -erp $'
-Enter the Personal Access Token of a build-bot user, with:
+    read -erp $'Enter the Personal Access Token of a build-bot user, with:
   Expire: never
   Scopes:
     repo (all)

@@ -69,8 +69,7 @@ services:
       - GITHUB_REPOSITORY=${GITHUB_REPOSITORY}
       - GITHUB_RUNNER_LABELS=${GITHUB_RUNNER_LABELS}
       - GITHUB_RUNNER_NAME=${GITHUB_RUNNER_NAME}
-      # TODO this should not be here -- instead, the runner token should be passed
-      - GITHUB_PERSONAL_ACCESS_TOKEN=${GITHUB_PERSONAL_ACCESS_TOKEN}
+      - GITHUB_RUNNER_TOKEN=${GITHUB_RUNNER_TOKEN}
     depends_on:
       nexus:
         condition: service_healthy

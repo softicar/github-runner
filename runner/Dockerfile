@@ -25,13 +25,11 @@ ENV PATH="/opt/jdk/bin:${PATH}"
 
 # Install Java test-runtime dependencies:
 #   git -- to clone repos
-#   jq -- required by the script invoked with CMD
 #   libfontconfig1 -- required during Java test runtime
 # Afterwards, clear the apt package lists (see https://docs.docker.com/develop/develop-images/dockerfile_best-practices/).
 RUN apt-get update \
     && apt-get install -y \
        git \
-       jq \
        libfontconfig1 \
     && rm -rf /var/lib/apt/lists/*
 
