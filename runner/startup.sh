@@ -1,5 +1,9 @@
 #!/bin/bash
 
+# Startup script of the "runner" container.
+#
+# Invoked by the init process of the container.
+
 # Validate environment variables
 [[ -z "$GITHUB_RUNNER_TOKEN" ]] && { echo "FATAL: GITHUB_RUNNER_TOKEN must be defined." ; exit 1; }
 [[ -z "$GITHUB_REPOSITORY" ]] && { echo "FATAL: GITHUB_REPOSITORY must be defined." ; exit 1; }
