@@ -12,7 +12,7 @@ A [GitHub Actions Runner](https://github.com/actions/runner) to build a SoftiCAR
 
 ## 2 Prerequisites
 
-The following things are required to set up a SoftiCAR GitHub Runner:
+The following things are required to set up _SoftiCAR GitHub Runner_ on a VM:
 
 1. Login credentials for the GitHub organization's build-bot user.
    - To create a [GitHub Personal Access Token](https://docs.github.com/en/authentication/keeping-your-account-and-data-secure/creating-a-personal-access-token).
@@ -35,10 +35,6 @@ The following things are required to set up a SoftiCAR GitHub Runner:
    - Deny all other connections.
 1. Log in to the GitHub UI with your personal account:
    - At `Settings` / `Manage Access` of the repository to build, add the build-bot user as an `Admin`.
-1. Log in to the GitHub UI with the build-bot account:
-   - Head to `(Build-Bot User Profile)` / `Settings` / `Developer settings` / `Personal access tokens`.
-   - Create a Personal Access Token (PAT), with scopes as described in `softicar-github-runner.env-example`
-   - Copy the PAT to a text editor -- you will need it below -- but don't save it.
 1. Log in to the VM, as a non-root user.
    - If the user has an RSA key pair which is also used on another machine, **delete it**.
      - Do _not_ reuse an existing key pair for this machine.
@@ -51,30 +47,66 @@ The following things are required to set up a SoftiCAR GitHub Runner:
        sudo apt install git
 
 1. Clone this repository.
-1. Run the setup script, and install all components (i.e. Docker, Docker-Compose, GitHub CLI, and Sysbox):
+1. Use the setup script to install all required components (i.e. Docker, Docker-Compose, GitHub CLI, and Sysbox):
 
        ./setup install
 
-   - Reboot the VM afterwards.
-1. Log in to GitHub, using the PAT of the build-bot user:
+   - Answer to various prompts.
+   - When prompted for a Personal Access Token (PAT), log in to the GitHub UI with the build-bot account.
+   - Head to `(Build-Bot User Profile)` / `Settings` / `Developer settings` / `Personal access tokens`.
+   - Create a PAT with settings and scopes as described in the terminal prompt.
+   - Copy and paste the PAT into the terminal prompt. **Watch out for leading and tailing whitespaces!**
+1. Reboot the VM afterwards.
+1. **Optionally,** copy `softicar-github-runner-service.env-example` to `/home/<user>/.softicar/softicar-github-runner-service.env`
+   - This is only necessary if default settings shall be overridden -- e.g. if a specific [GitHub Actions Runner](https://github.com/actions/runner) version shall be enforced.
+   - Refer to the comments in [softicar-github-runner-service.env-example](systemd-service/softicar-github-runner-service.env-example) and [softicar-github-runner-service-docker-compose.yml](systemd-service/softicar-github-runner-service-docker-compose.yml) for details.
+1. Install and start the systemd service: _(TODO rework this step when service installation gets migrated into setup.sh)_
 
-       gh auth login
-
-1. Copy `softicar-github-runner.env-example` to `/home/<user>/.softicar/softicar-github-runner.env`
-   - Read the comments in that file, and define the environment variables accordingly.
-1. Install and start the systemd service:
-
-       ./service.sh install
-       ./service.sh start
+       ./control.sh install
+       ./control.sh start
 
    - Note that `install` will also _enable_ the service, i.e. set it to auto-start after reboots.
-1. Configure the cache proxy container:
-   1. **TODO** describe nexus setup and repository configuration
+1. Configure the _nexus_ container as a pull-though cache proxy for build dependencies:
+   1. Finish the first-time setup wizard of the _nexus_ container:
+      - Look up the default password of the `admin` user in `/var/lib/docker/volumes/nexus-data/_data/admin.password`
+      - Navigate to `http://<ip-of-vm>:8081`, and log in with `admin` / `(default-password)`
+      - Perform the displayed initialization steps. **Caution:** The default `admin.password` file will be deleted in the process.
+   1. Configure a **Docker image proxy:**
+      - Head to `Settings` / `Repository` / `Repositories`, click `Create repository`, and select `docker (proxy)`
+      - Enter:
+        - _Name:_ `docker-hub`
+        - _HTTP:_ Enabled, and enter `8123`
+        - _Allow anonymous docker pull:_ Enabled
+        - _Enable Docker V1 API:_ Enabled (**TODO** try without this)
+        - _Proxy / Remote Storage:_ `https://registry-1.docker.io`
+        - _Proxy / Docker Index:_ `Use Docker Hub`
+      - Click `Create`
+      - Head to `Settings` / `Security` / `Realms`
+      - Enable `Docker Bearer Token Realm`
+      - Click `Save`
+   1. Configure a **Gradle plugins proxy:**
+      - Head to `Settings` / `Repository` / `Repositories`, click `Create repository`, and select `maven2 (proxy)`
+      - Enter:
+        - _Name:_ `gradle-plugins`
+        - _Maven 2 / Layout policy:_ `Permissive`
+        - _Proxy / Remote Storage:_ `https://plugins.gradle.org/m2/`
+        - _Storage / Strict Content Type Validation:_ Enabled
+      - Click `Create`
+   1. Configure a **Gradle dependencies proxy:**
+      - Head to `Settings` / `Repository` / `Repositories`, and edit the default `maven-central` repository.
+      - Enter:
+        - _Maven 2 / Layout policy:_ `Permissive`
+        - _Proxy / Remote Storage:_ `https://repo1.maven.org/maven2/`
+        - _Storage / Strict Content Type Validation:_ `Disabled` (**TODO** try the default: Enabled)
+      - Click `Save`
+   1. In the GitHub UI, configure the CI workflow of the project to build:
+      - Set `runs-on` to `[self-hosted, ephemeral, dind]`
+      - Add to the `run: ./gradlew clean build` command: `-PpluginProxy=http://nexus:8081/repository/gradle-plugins-proxy/ -PdependencyProxy=http://nexus:8081/repository/maven-central/`
 1. In the GitHub UI, under `Settings` / `Actions` / `Runners` of the project to build, make sure that the runner is listed as `Idle`.
 1. Make sure that no errors are reported in the outputs of:
 
-       ./service.sh status
-       ./service.sh logs
+       ./control.sh status
+       ./control.sh logs
 
 ## 4 Limitations
 
@@ -106,11 +138,15 @@ This would result in Docker images, Gradle plugins and Gradle dependencies being
 
 SoftiCAR GitHub Runner therefore employs [Sonatype Nexus](https://github.com/sonatype/nexus-public) as a persistent pull-through cache proxy, in a separate Docker container.
 
-## 6 Contributing
+## 6 Architecture
+
+TODO
+
+## 7 Contributing
 
 Please read the [contribution guidelines](CONTRIBUTING.md) for this repository and keep our [code of conduct](CODE_OF_CONDUCT.md) in mind.
 
-## 7 Related Projects
+## 8 Related Projects
 
 - [Docker](https://www.docker.com/)
 - [Docker-Compose](https://github.com/docker/compose/releases)

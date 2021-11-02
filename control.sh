@@ -1,30 +1,32 @@
 #!/bin/bash
 
-# SoftiCAR GitHub Runner - Systemd Service Management Script
+# SoftiCAR GitHub Runner - Systemd Service Control Script
 #
 # Facilitates installation, administration and uninstallation of the
 # systemd service that manages the SoftiCAR GitHub Runner lifecycle.
 #
 # Run without parameters for a list of available commands.
+#
+# TODO migrate "install" and "uninstall" to setup.sh - those have no place in here
 
 SELF_PATH=$(cd `dirname $0` && pwd)
 SERVICE_FILE=softicar-github-runner.service
 SERVICE_FILE_DESTINATION=/etc/systemd/system/$SERVICE_FILE
-SERVICE_TEMPLATE=softicar-github-runner.service-template
-SERVICE_SCRIPT_PATH=$SELF_PATH/softicar-github-runner.sh
-SERVICE_SCRIPT_ENVIRONMENT_FILE=softicar-github-runner.env
+SERVICE_TEMPLATE_PATH=systemd-service/softicar-github-runner.service-template
+SERVICE_SCRIPT_PATH=$SELF_PATH/systemd-service/softicar-github-runner-service.sh
+SERVICE_SCRIPT_ENVIRONMENT_FILE=softicar-github-runner-service.env
 RUNNER_NAME_DEFAULT="softicar-github-runner"
 RUNNER_NAME_REGEX="[a-zA-Z0-9]([_.-]?[a-zA-Z0-9]+)*"
 RUNNER_LABELS_DEFAULT="ephemeral,dind"
-REPOSITORY_NAME_EXAMPLE="SoftiCAR/some-repo"
+REPOSITORY_NAME_EXAMPLE="softicar/some-repo"
 REPOSITORY_NAME_REGEX="[a-zA-Z0-9]([_.-]?[a-zA-Z0-9]+)*/[a-zA-Z0-9]([_.-]?[a-zA-Z0-9]+)*"
 
 function service_install {
   if [[ ! -f $SERVICE_FILE_DESTINATION ]]; then
-    [[ -f $SERVICE_TEMPLATE ]] || { echo "FATAL: Could not find the service template at $SERVICE_TEMPLATE"; exit 1; }
-    [[ -f $SERVICE_SCRIPT_PATH ]] || { echo "FATAL: Could not find the service script at $SERVICE_SCRIPT_PATH"; exit 1; }
-
     echo "Installing service..."
+
+    [[ -f $SERVICE_TEMPLATE_PATH ]] || { echo "FATAL: Could not find the service template at $SERVICE_TEMPLATE_PATH"; exit 1; }
+    [[ -f $SERVICE_SCRIPT_PATH ]] || { echo "FATAL: Could not find the service script at $SERVICE_SCRIPT_PATH"; exit 1; }
 
     prompt_for_service_user SERVICE_USER
     prompt_for_repository GITHUB_REPOSITORY
@@ -33,7 +35,7 @@ function service_install {
     prompt_for_personal_access_token GITHUB_PERSONAL_ACCESS_TOKEN
     RUNNER_ENV_FILE="/home/${SERVICE_USER}/.softicar/${SERVICE_SCRIPT_ENVIRONMENT_FILE}"
 
-    SERVICE_FILE_CONTENT=$(cat $SERVICE_TEMPLATE \
+    SERVICE_FILE_CONTENT=$(cat $SERVICE_TEMPLATE_PATH \
                            | sed "s:%%SERVICE_USER%%:${SERVICE_USER}:" \
                            | sed "s:%%SERVICE_SCRIPT_PATH%%:${SERVICE_SCRIPT_PATH}:" \
                            | sed "s:%%RUNNER_ENV_FILE%%:${RUNNER_ENV_FILE}:" \
@@ -66,31 +68,31 @@ function service_uninstall {
 }
 
 function service_status {
-  assert_installed
+  assert_service_installed
   systemctl status $SERVICE_FILE
 }
 
 function service_start {
-  assert_installed
+  assert_service_installed
   echo "Starting service..."
   sudo systemctl start $SERVICE_FILE && \
   echo "Service started."
 }
 
 function service_stop {
-  assert_installed
+  assert_service_installed
   echo "Stopping service..."
   sudo systemctl stop $SERVICE_FILE && \
   echo "Service stopped."
 }
 
 function service_logs {
-  assert_installed
+  assert_service_installed
   journalctl -u $SERVICE_FILE $TAILING_PARAMS
 }
 
-function assert_installed {
-  [[ -f $SERVICE_FILE_DESTINATION ]] || { echo "Service is not installed. Install it with: $0 install"; exit 1; }
+function assert_service_installed {
+  [[ -f $SERVICE_FILE_DESTINATION ]] || { echo "Service is not installed."; exit 1; }
 }
 
 # Prompts for the name of an existing local user.
@@ -166,7 +168,7 @@ Token: '
 }
 
 function print_help {
-  echo "SoftiCAR GitHub Runner - Systemd Service Management Script"
+  echo "SoftiCAR GitHub Runner - Systemd Service Control Script"
   echo ""
   echo "Usage:"
   echo "  $0 [COMMAND]"
@@ -174,7 +176,7 @@ function print_help {
   echo "Commands:"
   echo "  install          Install the service, and enable it"
   echo "  logs             Show the service logs"
-  echo "                   Forwards tailing parameters to 'journalctl', e.g. '-f' or '-u'"
+  echo "                   Tailing parameters are forwarded to 'journalctl', e.g. '-f' or '-r'"
   echo "  start            Start the service"
   echo "  status           Show the service status"
   echo "  stop             Stop the service"
