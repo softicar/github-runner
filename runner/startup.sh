@@ -1,47 +1,29 @@
 #!/bin/bash
 
 # Validate environment variables
-[[ -z "$GITHUB_PERSONAL_ACCESS_TOKEN" ]] && { echo "FATAL: GITHUB_PERSONAL_ACCESS_TOKEN must not be empty." ; exit 1; }
-[[ -z "$GITHUB_REPOSITORY" ]] && { echo "FATAL: GITHUB_REPOSITORY must not be empty." ; exit 1; }
-[[ -z "$GITHUB_RUNNER_NAME" ]] && { echo "FATAL: GITHUB_RUNNER_NAME must not be empty." ; exit 1; }
-
-AUTH_URL="https://api.github.com/repos/${GITHUB_REPOSITORY}/actions/runners/registration-token"
-REGISTRATION_URL="https://github.com/${GITHUB_REPOSITORY}"
-
-# Generates a new runner token, using a personal access token.
-generate_runner_token() {
-  echo "Generating runner token..."
-  TOKEN_RESPONSE=$(curl -sX POST -H "Authorization: token ${GITHUB_PERSONAL_ACCESS_TOKEN}" "${AUTH_URL}")
-  RUNNER_TOKEN=$(echo "${TOKEN_RESPONSE}" | jq .token --raw-output)
-
-  if [ "${RUNNER_TOKEN}" == "null" ]
-  then
-    echo "Failed to generate runner token: ${TOKEN_RESPONSE}"
-    exit 1
-  fi
-
-  echo "Runner token generated."
-}
+[[ -z "$GITHUB_RUNNER_TOKEN" ]] && { echo "FATAL: GITHUB_RUNNER_TOKEN must be defined." ; exit 1; }
+[[ -z "$GITHUB_REPOSITORY" ]] && { echo "FATAL: GITHUB_REPOSITORY must be defined." ; exit 1; }
+[[ -z "$GITHUB_RUNNER_NAME" ]] && { echo "FATAL: GITHUB_RUNNER_NAME must be defined." ; exit 1; }
 
 # Registers a new runner.
 register_runner() {
   echo "Registering runner..."
-  RUNNER_ID=${GITHUB_RUNNER_NAME}_$(openssl rand -hex 6)
-  generate_runner_token
+  local registration_url="https://github.com/${GITHUB_REPOSITORY}"
+  local runner_name=${GITHUB_RUNNER_NAME}_$(openssl rand -hex 6)
   ./config.sh \
-    --name "${RUNNER_ID}" \
+    --url "${registration_url}" \
+    --name "${runner_name}" \
     --labels "${GITHUB_RUNNER_LABELS}" \
-    --token "${RUNNER_TOKEN}" \
-    --url "${REGISTRATION_URL}" \
+    --token "${GITHUB_RUNNER_TOKEN}" \
     --unattended \
     --ephemeral
-  echo "Runner ${RUNNER_ID} registered."
+  echo "Runner ${runner_name} registered."
 }
 
 # Unregisters the previously registered runner.
 unregister_runner() {
   echo "Unregistering runner..."
-  ./config.sh remove --unattended --token "${RUNNER_TOKEN}"
+  ./config.sh remove --unattended --token "${GITHUB_RUNNER_TOKEN}"
   echo "Runner unregistered."
 }
 
