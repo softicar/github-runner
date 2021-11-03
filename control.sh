@@ -18,7 +18,7 @@ SERVICE_SCRIPT_ENVIRONMENT_FILE=softicar-github-runner-service.env
 RUNNER_NAME_DEFAULT="softicar-github-runner"
 RUNNER_NAME_REGEX="[a-zA-Z0-9]([_.-]?[a-zA-Z0-9]+)*"
 RUNNER_LABELS_DEFAULT="ephemeral,dind"
-REPOSITORY_NAME_EXAMPLE="softicar/some-repo"
+REPOSITORY_NAME_EXAMPLE="<owner>/<repository>"
 REPOSITORY_NAME_REGEX="[a-zA-Z0-9]([_.-]?[a-zA-Z0-9]+)*/[a-zA-Z0-9]([_.-]?[a-zA-Z0-9]+)*"
 
 function service_install {
