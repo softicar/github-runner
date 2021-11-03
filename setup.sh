@@ -104,8 +104,8 @@ function install_docker() {
 
 function uninstall_docker() {
   if is_docker_installed; then
-    is_running_containers && { echo "FATAL: Docker cannot be uninstalled as long as there are running containers."; exit 1; }
     echo -e "\nUninstalling Docker..."
+    is_running_containers && { echo "FATAL: Docker cannot be uninstalled as long as there are running containers."; exit 1; }
 
     sudo apt remove -y docker-ce docker-ce-cli && \
     REBOOT_HINT=true && \
@@ -131,8 +131,8 @@ function install_docker_compose() {
 
 function uninstall_docker_compose() {
   if is_docker_compose_installed; then
-    [[ ! -L $DOCKER_COMPOSE_TARGET ]] && { echo "FATAL: Docker-Compose cannot be uninstalled because $DOCKER_COMPOSE_TARGET is not a symlink."; exit 1; }
     echo -e "\nUninstalling Docker-Compose..."
+    [[ ! -L $DOCKER_COMPOSE_TARGET ]] && { echo "FATAL: Docker-Compose cannot be uninstalled because $DOCKER_COMPOSE_TARGET is not a symlink."; exit 1; }
 
     sudo rm $DOCKER_COMPOSE_TARGET && \
     echo "Docker-Compose uninstalled."
@@ -182,8 +182,8 @@ function install_sysbox() {
 
 function uninstall_sysbox() {
   if is_sysbox_installed; then
-    is_running_containers && { echo "FATAL: Sysbox cannot be uninstalled as long as there are running containers."; exit 1; }
     echo -e "\nUninstalling Sysbox..."
+    is_running_containers && { echo "FATAL: Sysbox cannot be uninstalled as long as there are running containers."; exit 1; }
 
     sudo apt remove -y sysbox-ce && \
     echo "Sysbox uninstalled."
@@ -213,11 +213,11 @@ function is_running_containers() {
 }
 
 function print_components_status() {
-  echo "COMPONENT           DESCRIPTION                INSTALLED"
-  echo "docker              Docker Engine              $(is_docker_installed && echo 'yes' || echo 'no')"
-  echo "docker-compose      Docker-Compose Script      $(is_docker_compose_installed && echo 'yes' || echo 'no')"
-  echo "gh                  GitHub CLI                 $(is_gh_installed && echo 'yes' || echo 'no')"
-  echo "sysbox              Sysbox Docker Runtime      $(is_sysbox_installed && echo 'yes' || echo 'no')"
+  echo "COMPONENT           DESCRIPTION                     INSTALLED"
+  echo "docker              Docker Engine                   $(is_docker_installed && echo 'yes' || echo 'no')"
+  echo "docker-compose      Docker-Compose Script           $(is_docker_compose_installed && echo 'yes' || echo 'no')"
+  echo "gh                  GitHub command-line client      $(is_gh_installed && echo 'yes' || echo 'no')"
+  echo "sysbox              Sysbox Docker Runtime           $(is_sysbox_installed && echo 'yes' || echo 'no')"
 }
 
 function print_reboot_hint_if_necessary() {
@@ -258,10 +258,10 @@ function print_help {
   echo ""
   echo "Components:"
   echo "  all                         (all components)"
-  echo "  docker                      the Docker-CE engine"
-  echo "  docker-compose              the Docker-Compose command"
-  echo "  gh                          the GitHub CLI command-line client"
-  echo "  sysbox                      the \"Sysbox\" Docker runtime"
+  echo "  docker                      the Docker Engine"
+  echo "  docker-compose              the Docker-Compose script"
+  echo "  gh                          the GitHub command-line client"
+  echo "  sysbox                      the Sysbox Docker runtime"
 
   print_release_warning_if_necessary
 }

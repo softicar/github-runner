@@ -1,8 +1,8 @@
 # Docker-Compose project definition for SoftiCAR GitHub Runner.
 #
-# Invoked by softicar-github-runner.sh
+# Invoked by softicar-github-runner-service.sh
 #
-# The following environment variables may optionally be defined via "softicar-github-runner.env":
+# The following environment variables may optionally be defined via "softicar-github-runner-service.env":
 #
 # NEXUS_CHECK_INTERVAL
 #   The polling interval for the "nexus" service health check.
@@ -59,7 +59,7 @@ services:
     container_name: runner
     image: softicar/softicar-github-runner
     build:
-      context: ./runner
+      context: ../runner-image
       args:
         - RUNNER_ADOPT_OPEN_JDK_VERSION=${RUNNER_ADOPT_OPEN_JDK_VERSION:-15.0.2+7}
         - RUNNER_DOCKER_COMPOSE_VERSION=${RUNNER_DOCKER_COMPOSE_VERSION:-1.27.4}
