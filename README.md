@@ -1,6 +1,6 @@
 # SoftiCAR GitHub Runner
 
-A [GitHub Actions Runner](https://github.com/actions/runner) to build a SoftiCAR Java project in an ephemeral Docker container.
+An ephemeral [GitHub Actions Runner](https://github.com/actions/runner) to build a SoftiCAR Java project in a disposable Docker container.
 
 ## 1 Main Features
 
