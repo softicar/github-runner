@@ -101,7 +101,11 @@ The following things are required to set up _SoftiCAR GitHub Runner_ on a VM:
       - Click `Save`
    1. In the GitHub UI, configure the CI workflow of the project to build:
       - Set `runs-on` to `[self-hosted, ephemeral, dind]`
-      - Add to the `run: ./gradlew clean build` command: `-PpluginProxy=http://nexus:8081/repository/gradle-plugins-proxy/ -PdependencyProxy=http://nexus:8081/repository/maven-central/`
+      - Add parameters to the `run: ./gradlew clean build` command:
+
+            -PpluginProxy=http://nexus:8081/repository/gradle-plugins-proxy/
+            -PdependencyProxy=http://nexus:8081/repository/maven-central/
+
 1. In the GitHub UI, under `Settings` / `Actions` / `Runners` of the project to build, make sure that the runner is listed as `Idle`.
 1. Make sure that no errors are reported in the outputs of:
 
