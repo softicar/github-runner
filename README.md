@@ -110,7 +110,7 @@ The following things are required to set up _SoftiCAR GitHub Runner_ on a VM:
 
 ## 4 Limitations
 
-- Each SoftiCAR GitHub Runner VM is configured to build _one_ specific repository.
+- Each _SoftiCAR GitHub Runner_ VM is configured to build _one_ specific repository.
   - It is _not_ yet possible to configure it as an organization-wide runner, in order to use it for several repositories.
   - This might change in the future.
 - This runner implementation is heavily geared towards building SoftiCAR Java projects.
@@ -124,19 +124,19 @@ The following things are required to set up _SoftiCAR GitHub Runner_ on a VM:
 - On the runner machine, that malicious code is executed with the permissions of the user that runs the build.
 - This way, files on the runner machine can be manipulated, and/or available network access can be exploited.
 - This enables DOS-, injection-, cache-poisoning- and other kinds of attacks against the runner machine and/or connected machines, unless counter-measures are applied.
-- SoftiCAR GitHub Runner therefore sandboxes the build execution. It accepts the fact that the runner machine may get compromised – but it limits the consequences by:
+- _SoftiCAR GitHub Runner_ therefore sandboxes the build execution. It accepts the fact that the runner machine may get compromised – but it limits the consequences by:
   1. Creating and registering an ephemeral runner in an unprivileged Docker container,
   1. Executing the build on the containerized runner, and
   1. Unregistering and disposing the containerized runner after the build.
-- Yet, SoftiCAR GitHub Runner by itself **does not** provide network isolation of builds. This needs to be solved on network infrastructure level.
+- Yet, _SoftiCAR GitHub Runner_ by itself **does not** provide network isolation of builds. This needs to be solved on network infrastructure level.
 
 ### 5.2 Efficiency
 
 As a result of the sandboxing approach, the runner containers are disposed after each build, and so are their internal caches.
 
-This would result in Docker images, Gradle plugins and Gradle dependencies being downloaded from the internet for every single build, which would be wasteful in terms of bandwidth and time consumption. To avoid those repeated downloads, said build-time dependencies need to be cached outside the Docker container of the SoftiCAR GitHub Runner.
+This would result in Docker images, Gradle plugins and Gradle dependencies being downloaded from the internet for every single build, which would be wasteful in terms of bandwidth and time consumption. To avoid those repeated downloads, said build-time dependencies need to be cached outside the Docker container of the _SoftiCAR GitHub Runner_.
 
-SoftiCAR GitHub Runner therefore employs [Sonatype Nexus](https://github.com/sonatype/nexus-public) as a persistent pull-through cache proxy, in a separate Docker container.
+_SoftiCAR GitHub Runner_ therefore employs [Sonatype Nexus](https://github.com/sonatype/nexus-public) as a persistent pull-through cache proxy, in a separate Docker container.
 
 ## 6 Architecture
 
