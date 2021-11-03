@@ -144,7 +144,24 @@ _SoftiCAR GitHub Runner_ therefore employs [Sonatype Nexus](https://github.com/s
 
 ## 6 Architecture
 
-TODO
+The basic _SoftiCAR GitHub Runner_ architecture is depicted below:
+
+![](./docs/softicar-github-runner-architecture.png)
+
+Notes on components:
+
+- `runner` container:
+  - Uses the `sysbox` Docker runtime
+  - Is unprivileged
+  - Has restricted network access
+  - Has no bind-mounts with write access
+  - Is disposed and recreated after each build
+- `nexus` container:
+  - Serves as pull-through cache proxy for build-time resources (i.e. Docker images, Gradle plugins and Gradle dependencies)
+  - Avoids repeated downloads after the `runner` container was disposed
+- `Docker Engine (nested)`:
+  - Runs in an unprivileged container
+  - This is enabled via the `sysbox` runtime of `runner` container
 
 ## 7 Contributing
 
