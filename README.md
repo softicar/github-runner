@@ -151,8 +151,8 @@ The basic _SoftiCAR GitHub Runner_ architecture is depicted below:
 Notes on components:
 
 - `runner` container:
-  - Uses the `sysbox` Docker runtime
   - Is unprivileged
+  - Uses the `sysbox` Docker runtime to enable unprivileged _DinD_
   - Has restricted network access
   - Has no bind-mounts with write access
   - Is disposed and recreated after each build
@@ -161,7 +161,7 @@ Notes on components:
   - Avoids repeated downloads after the `runner` container was disposed
 - `Docker Engine (nested)`:
   - Runs in an unprivileged container
-  - This is enabled via the `sysbox` runtime of `runner` container
+  - This is enabled via the `sysbox` runtime of the `runner` container
 
 ## 7 Contributing
 
