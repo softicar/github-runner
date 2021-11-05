@@ -36,36 +36,36 @@ The following things are required to set up _SoftiCAR GitHub Runner_ on a VM:
 1. Log in to the GitHub UI with your personal account:
    - At `Settings` / `Manage Access` of the repository to build, add the build-bot user as an `Admin`.
 1. Log in to the VM, as a non-root user.
-   - If the user has an RSA key pair which is also used on another machine, **delete it**.
+1. Add a public RSA key in the GitHub UI:
+   - If the VM user has an RSA key pair which is also used on another machine, **delete it** and **generate a new one**.
      - Do _not_ reuse an existing key pair for this machine.
      - Delete `id_rsa` and `id_rsa.pub` from `/home/<user>/.ssh/`
      - If existing, delete `id_rsa` and `id_rsa.pub` from `/root/.ssh/` as well.
-   - Run `ssh-keygen` to generate a new key pair in `/home/<user>/.ssh/`
-   - In the GitHub UI, at `(Build-Bot User Profile)` / `Settings` / `SSH and GPG keys`, add the content of the generated `id_rsa.pub` file.
+     - Run `ssh-keygen` to generate a new key pair in `/home/<user>/.ssh/`
+   - In the GitHub UI, at `(Build-Bot User Profile)` / `Settings` / `SSH and GPG keys`, add the content of `id_rsa.pub`
 1. Install `git`:
 
        sudo apt install git
 
 1. Clone this repository.
-1. Use the setup script to install all required components (i.e. Docker, Docker-Compose, GitHub CLI, and Sysbox):
+1. Use the setup script to install _all_ required components (i.e. Docker, Docker-Compose, Sysbox, and a Systemd Service):
 
        ./setup install
 
    - Answer to various prompts.
    - When prompted for a Personal Access Token (PAT), log in to the GitHub UI with the build-bot account.
-   - Head to `(Build-Bot User Profile)` / `Settings` / `Developer settings` / `Personal access tokens`.
+   - Head to `(Build-Bot User Profile)` / `Settings` / `Developer settings` / `Personal access tokens`
    - Create a PAT with settings and scopes as described in the terminal prompt.
-   - Copy and paste the PAT into the terminal prompt. **Watch out for leading and tailing whitespaces!**
-1. Reboot the VM afterwards.
+   - Copy and paste the PAT into the terminal prompt.
 1. **Optionally,** copy `softicar-github-runner-service.env-example` to `/home/<user>/.softicar/softicar-github-runner-service.env`
-   - This is only necessary if default settings shall be overridden -- e.g. if a specific [GitHub Actions Runner](https://github.com/actions/runner) version shall be enforced.
+   - Normally, this environment file is _not_ required.
+   - Yet, it _can_ be used to override some default settings -- e.g. if a specific [GitHub Actions Runner](https://github.com/actions/runner) version shall be enforced.
    - Refer to the comments in [softicar-github-runner-service.env-example](systemd-service/softicar-github-runner-service.env-example) and [softicar-github-runner-service-docker-compose.yml](systemd-service/softicar-github-runner-service-docker-compose.yml) for details.
-1. Install and start the systemd service: _(TODO rework this step when service installation gets migrated into setup.sh)_
+1. Reboot the VM.
+1. Make sure that the systemd service is `active (running)`:
 
-       ./control.sh install
-       ./control.sh start
+       ./control.sh status
 
-   - Note that `install` will also _enable_ the service, i.e. set it to auto-start after reboots.
 1. Configure the _nexus_ container as a pull-though cache proxy for build dependencies:
    1. Finish the first-time setup wizard of the _nexus_ container:
       - Look up the default password of the `admin` user in `/var/lib/docker/volumes/nexus-data/_data/admin.password`
@@ -107,10 +107,17 @@ The following things are required to set up _SoftiCAR GitHub Runner_ on a VM:
             -PdependencyProxy=http://nexus:8081/repository/maven-central/
 
 1. In the GitHub UI, under `Settings` / `Actions` / `Runners` of the project to build, make sure that the runner is listed as `Idle`.
-1. Make sure that no errors are reported in the outputs of:
+1. Make sure that no errors are reported in the output of:
 
-       ./control.sh status
        ./control.sh logs
+
+   You can _follow_ the output with:
+
+       ./control.sh logs -f
+
+   For all available control commands, enter:
+
+       ./control.sh
 
 ## 4 Limitations
 
