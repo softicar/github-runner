@@ -119,13 +119,31 @@ The following things are required to set up _SoftiCAR GitHub Runner_ on a VM:
 
        ./control.sh
 
-## 4 Limitations
+## 4 Releases and Upgrading
 
-- Each _SoftiCAR GitHub Runner_ VM is configured to build _one_ specific repository.
-  - It is _not_ yet possible to configure it as an organization-wide runner, in order to use it for several repositories.
-  - This might change in the future.
-- This runner implementation is heavily geared towards building SoftiCAR Java projects.
-  - It probably won't be useful for other kinds of projects, beyond serving as technical showcase.
+So far, we do not create explicit releases for this project. The `main` branch is assumed to be constantly stable.
+
+To upgrade an existing _SoftiCAR GitHub Runner_ VM, follow these steps:
+
+1. Find the currently-used Personal Access Token (PAT) in `/etc/systemd/system/softicar-github-runner.service`, and copy it to a text editor.
+1. Uninstall the service with:
+
+       ./setup uninstall service
+
+   Note that this also stops the service if it's currently running.
+1. Update the checkout:
+
+       cd github-runner
+       git pull
+
+1. Install the service with:
+
+       ./setup install service
+
+   Use the PAT that you copied to a text editor before.
+1. Start the service with:
+
+       ./control start
 
 ## 5 Motivation and Goals
 
@@ -170,11 +188,19 @@ Notes on components:
   - Runs in an unprivileged container
   - This is enabled via the `sysbox` runtime of the `runner` container
 
-## 7 Contributing
+## 7 Limitations
+
+- Each _SoftiCAR GitHub Runner_ VM is configured to build _one_ specific repository.
+  - It is _not_ yet possible to configure it as an organization-wide runner, in order to use it for several repositories.
+  - This might change in the future.
+- This runner implementation is heavily geared towards building SoftiCAR Java projects.
+  - It probably won't be useful for other kinds of projects, beyond serving as technical showcase.
+
+## 8 Contributing
 
 Please read the [contribution guidelines](CONTRIBUTING.md) for this repository and keep our [code of conduct](CODE_OF_CONDUCT.md) in mind.
 
-## 8 Related Projects
+## 9 Related Projects
 
 - [Docker](https://www.docker.com/)
 - [Docker-Compose](https://github.com/docker/compose/releases)
