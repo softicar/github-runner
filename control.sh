@@ -51,6 +51,8 @@ function print_help {
   echo "  start            Start the service"
   echo "  status           Show the service status"
   echo "  stop             Stop the service"
+
+  print_release_warning_if_necessary
 }
 
 # -------------------------------- Main Script -------------------------------- #
