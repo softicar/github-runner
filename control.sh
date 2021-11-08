@@ -28,7 +28,7 @@ function service_enable {
 
 function service_logs {
   assert_service_installed
-  journalctl -u $SERVICE_FILE $TAILING_PARAMS
+  sudo journalctl -u $SERVICE_FILE $TAILING_PARAMS
 }
 
 function service_status {
