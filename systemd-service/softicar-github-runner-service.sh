@@ -55,6 +55,14 @@ generate_runner_token() {
   fi
 }
 
+# Removes unreferenced images that have both "repository=none" and "tag=none".
+remove_dangling_images() {
+  echo "Removing dangling images..."
+
+  docker rmi $(docker images --filter "dangling=true" -q --no-trunc) && \
+  echo "Dangling images removed."
+}
+
 # -------------------------------- Main Script -------------------------------- #
 
 check_prerequisites
@@ -68,10 +76,12 @@ trap_signals
 
 generate_runner_token
 
-# Remove the old "runner" before (re-)starting it, to reset its content.
+# Remove the old "runner" to get rid of its content.
 docker-compose -f $SCRIPT_PATH/$COMPOSE_FILE_NAME rm -f runner
 
-# Make sure that "nexus" gets or remains started, and that "runner" gets
-# (re-)built and (re-)started.
+# Start "nexus" if not yet running,
+# (re-)build and (re-)start "runner",
+# and remove dangling images from previous builds.
 docker-compose -f $SCRIPT_PATH/$COMPOSE_FILE_NAME up -d nexus && \
-docker-compose -f $SCRIPT_PATH/$COMPOSE_FILE_NAME up --build runner
+docker-compose -f $SCRIPT_PATH/$COMPOSE_FILE_NAME up --build runner && \
+remove_dangling_images
