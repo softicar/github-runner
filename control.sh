@@ -10,6 +10,22 @@ source common.sh
 
 # -------------------------------- Functions -------------------------------- #
 
+function service_disable {
+  assert_service_installed
+  echo "Disabling service..."
+
+  sudo systemctl disable $SERVICE_FILE && \
+  echo "Service disabled."
+}
+
+function service_enable {
+  assert_service_installed
+  echo "Enabling service..."
+
+  sudo systemctl enable $SERVICE_FILE && \
+  echo "Service enabled."
+}
+
 function service_logs {
   assert_service_installed
   journalctl -u $SERVICE_FILE $TAILING_PARAMS
@@ -46,6 +62,8 @@ function print_help {
   echo "  $0 [COMMAND]"
   echo ""
   echo "Commands:"
+  echo "  disable          Disable auto-start for the service"
+  echo "  enable           Enable auto-start for the service"
   echo "  logs             Show the service logs"
   echo "                   Tailing parameters are forwarded to 'journalctl', e.g. '-f' or '-r'"
   echo "  start            Start the service"
@@ -60,6 +78,8 @@ function print_help {
 TAILING_PARAMS="${@:2}"
 
 case $1 in
+  "disable") service_disable;;
+  "enable") service_enable;;
   "logs") service_logs;;
   "status") service_status;;
   "start") service_start;;
