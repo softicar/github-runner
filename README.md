@@ -131,6 +131,11 @@ To upgrade an existing _SoftiCAR GitHub Runner_ VM, follow these steps:
        ./setup uninstall service
 
    Note that this also stops the service if it's currently running.
+1. Stop and remove any remaining "runner" and "nexus" containers:
+
+       docker stop runner nexus
+       docker rm runner nexus
+
 1. Update the checkout:
 
        cd github-runner
