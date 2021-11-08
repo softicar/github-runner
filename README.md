@@ -136,7 +136,7 @@ To upgrade an existing _SoftiCAR GitHub Runner_ VM, follow these steps:
        docker stop runner nexus
        docker rm runner nexus
 
-3. Update the checkout:
+1. Update the checkout:
 
        cd github-runner
        git pull
