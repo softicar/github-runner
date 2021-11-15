@@ -83,7 +83,7 @@ function uninstall_all() {
 function install_docker() {
   if ! is_docker_installed; then
     echo -e "\nInstalling Docker..."
-    prompt_for_docker_user $DOCKER_USER
+    prompt_for_docker_user DOCKER_USER
 
     sudo apt update && \
     sudo apt install --no-install-recommends -y apt-transport-https ca-certificates curl gnupg-agent software-properties-common && \
