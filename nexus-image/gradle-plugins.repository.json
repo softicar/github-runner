@@ -1,12 +1,10 @@
 {
-  "name": "gradle-plugins",
+  "name": "gradle-plugins2",
   "online": true,
   "storage": {
     "blobStoreName": "default",
-    "strictContentTypeValidation": true,
-    "writePolicy": "ALLOW"
+    "strictContentTypeValidation": true
   },
-  "cleanup": null,
   "proxy": {
     "remoteUrl": "https://plugins.gradle.org/m2/",
     "contentMaxAge": -1,
@@ -18,23 +16,11 @@
   },
   "httpClient": {
     "blocked": false,
-    "autoBlock": true,
-    "connection": {
-      "retries": null,
-      "userAgentSuffix": null,
-      "timeout": null,
-      "enableCircularRedirects": false,
-      "enableCookies": false,
-      "useTrustStore": false
-    },
-    "authentication": null
+    "autoBlock": true
   },
-  "routingRuleName": null,
   "maven": {
     "versionPolicy": "RELEASE",
     "layoutPolicy": "PERMISSIVE",
     "contentDisposition": "INLINE"
-  },
-  "format": "maven2",
-  "type": "proxy"
+  }
 }
