@@ -1,12 +1,10 @@
 {
-  "name": "maven-central",
+  "name": "maven-central2",
   "online": true,
   "storage": {
     "blobStoreName": "default",
-    "strictContentTypeValidation": false,
-    "writePolicy": "ALLOW"
+    "strictContentTypeValidation": false
   },
-  "cleanup": null,
   "proxy": {
     "remoteUrl": "https://repo1.maven.org/maven2/",
     "contentMaxAge": -1,
@@ -18,23 +16,10 @@
   },
   "httpClient": {
     "blocked": false,
-    "autoBlock": false,
-    "connection": {
-      "retries": null,
-      "userAgentSuffix": null,
-      "timeout": null,
-      "enableCircularRedirects": false,
-      "enableCookies": false,
-      "useTrustStore": false
-    },
-    "authentication": null
+    "autoBlock": false
   },
-  "routingRuleName": null,
   "maven": {
     "versionPolicy": "RELEASE",
-    "layoutPolicy": "PERMISSIVE",
-    "contentDisposition": null
-  },
-  "format": "maven2",
-  "type": "proxy"
+    "layoutPolicy": "PERMISSIVE"
+  }
 }
