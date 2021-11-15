@@ -47,10 +47,15 @@ The following things are required to set up _SoftiCAR GitHub Runner_ on a VM:
 
        sudo apt install git
 
-1. Clone this repository.
-1. Use the setup script to install _all_ required components (i.e. Docker, Docker-Compose, Sysbox, and a Systemd Service):
+1. Clone this repository:
 
-       ./setup install
+       cd ~
+       git clone https://github.com/softicar/github-runner.git
+       cd ~/github-runner
+
+3. Use the setup script to install _all_ required components (i.e. Docker, Docker-Compose, Sysbox, and a Systemd Service):
+
+       ./setup.sh install
 
    - Answer to various prompts.
    - When prompted for a Personal Access Token (PAT), log in to the GitHub UI with the build-bot account.
