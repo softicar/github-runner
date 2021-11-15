@@ -3,19 +3,15 @@
   "online": true,
   "storage": {
     "blobStoreName": "default",
-    "strictContentTypeValidation": true,
-    "writePolicy": "ALLOW"
+    "strictContentTypeValidation": true
   },
-  "cleanup": null,
   "docker": {
     "v1Enabled": true,
     "forceBasicAuth": false,
-    "httpPort": 8123,
-    "httpsPort": null
+    "httpPort": 8123
   },
   "dockerProxy": {
-    "indexType": "HUB",
-    "indexUrl": null
+    "indexType": "HUB"
   },
   "proxy": {
     "remoteUrl": "https://registry-1.docker.io",
@@ -28,18 +24,6 @@
   },
   "httpClient": {
     "blocked": false,
-    "autoBlock": true,
-    "connection": {
-      "retries": null,
-      "userAgentSuffix": null,
-      "timeout": null,
-      "enableCircularRedirects": false,
-      "enableCookies": false,
-      "useTrustStore": false
-    },
-    "authentication": null
-  },
-  "routingRuleName": null,
-  "format": "docker",
-  "type": "proxy"
+    "autoBlock": true
+  }
 }
