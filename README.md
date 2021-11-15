@@ -66,45 +66,12 @@ The following things are required to set up _SoftiCAR GitHub Runner_ on a VM:
 
        ./control.sh status
 
-1. Configure the _nexus_ container as a pull-though cache proxy for build dependencies:
-   1. Finish the first-time setup wizard of the _nexus_ container:
-      - Look up the default password of the `admin` user in `/var/lib/docker/volumes/nexus-data/_data/admin.password`
-      - Navigate to `http://<ip-of-vm>:8081`, and log in with `admin` / `(default-password)`
-      - Perform the displayed initialization steps. **Caution:** The default `admin.password` file will be deleted in the process.
-   1. Configure a **Docker image proxy:**
-      - Head to `Settings` / `Repository` / `Repositories`, click `Create repository`, and select `docker (proxy)`
-      - Enter:
-        - _Name:_ `docker-hub`
-        - _HTTP:_ Enabled, and enter `8123`
-        - _Allow anonymous docker pull:_ Enabled
-        - _Enable Docker V1 API:_ Enabled (**TODO** try without this)
-        - _Proxy / Remote Storage:_ `https://registry-1.docker.io`
-        - _Proxy / Docker Index:_ `Use Docker Hub`
-      - Click `Create`
-      - Head to `Settings` / `Security` / `Realms`
-      - Enable `Docker Bearer Token Realm`
-      - Click `Save`
-   1. Configure a **Gradle plugins proxy:**
-      - Head to `Settings` / `Repository` / `Repositories`, click `Create repository`, and select `maven2 (proxy)`
-      - Enter:
-        - _Name:_ `gradle-plugins`
-        - _Maven 2 / Layout policy:_ `Permissive`
-        - _Proxy / Remote Storage:_ `https://plugins.gradle.org/m2/`
-        - _Storage / Strict Content Type Validation:_ Enabled
-      - Click `Create`
-   1. Configure a **Gradle dependencies proxy:**
-      - Head to `Settings` / `Repository` / `Repositories`, and edit the default `maven-central` repository.
-      - Enter:
-        - _Maven 2 / Layout policy:_ `Permissive`
-        - _Proxy / Remote Storage:_ `https://repo1.maven.org/maven2/`
-        - _Storage / Strict Content Type Validation:_ `Disabled` (**TODO** try the default: Enabled)
-      - Click `Save`
-   1. In the GitHub UI, configure the CI workflow of the project to build:
-      - Set `runs-on` to `[self-hosted, ephemeral, dind]`
-      - Add parameters to the `run: ./gradlew clean build` command:
+1. In the GitHub UI, configure the CI workflow of the project to build:
+   - Set `runs-on` to `[self-hosted, ephemeral, dind]`
+   - Add parameters to the `run: ./gradlew clean build` command:
 
-            -PpluginProxy=http://nexus:8081/repository/gradle-plugins-proxy/
-            -PdependencyProxy=http://nexus:8081/repository/maven-central/
+         -PpluginProxy=http://nexus:8081/repository/gradle-plugins-proxy/
+         -PdependencyProxy=http://nexus:8081/repository/maven-central/
 
 1. In the GitHub UI, under `Settings` / `Actions` / `Runners` of the project to build, make sure that the runner is listed as `Idle`.
 1. Make sure that no errors are reported in the output of:
