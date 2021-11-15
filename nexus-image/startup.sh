@@ -11,5 +11,5 @@ cd `dirname $0`
 
 # Start Nexus
 # Corresponds to the CMD in https://github.com/sonatype/docker-nexus3/blob/master/Dockerfile
-# Uses exec to replace the shell, so that the invoked script will properly receive signals.
+# Use exec to replace the shell, so that the invoked script will properly receive signals.
 exec /opt/sonatype/start-nexus-repository-manager.sh

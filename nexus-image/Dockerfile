@@ -6,11 +6,11 @@ FROM sonatype/nexus3:${NEXUS_VERSION}
 USER root
 
 # Copy configuration scripts
-ARG CONFIG_DIR=/nexus-data/softicar
-RUN mkdir -p ${CONFIG_DIR}
-COPY docker-hub.repository.json ${CONFIG_DIR}/
-COPY gradle-plugins.repository.json ${CONFIG_DIR}/
-COPY maven-central.repository.json ${CONFIG_DIR}/
+ARG NEXUS_CONFIG_DIR=/nexus-data/softicar
+RUN mkdir -p ${NEXUS_CONFIG_DIR}
+COPY docker-hub.repository.json ${NEXUS_CONFIG_DIR}/
+COPY gradle-plugins.repository.json ${NEXUS_CONFIG_DIR}/
+COPY maven-central.repository.json ${NEXUS_CONFIG_DIR}/
 
 # Copy the startup and configuration scripts
 COPY startup.sh /usr/local/bin/

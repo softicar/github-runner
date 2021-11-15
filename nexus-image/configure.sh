@@ -2,7 +2,7 @@
 
 # Configuration script for the "nexus" container.
 #
-# Invoked startup script.
+# Invoked by startup.sh.
 
 cd `dirname $0`
 
