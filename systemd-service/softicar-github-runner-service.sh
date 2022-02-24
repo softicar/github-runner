@@ -59,7 +59,7 @@ generate_runner_token() {
 remove_dangling_images() {
   echo "Removing dangling images..."
 
-  docker rmi $(docker images --filter "dangling=true" -q --no-trunc) && \
+  docker images --filter "dangling=true" -q --no-trunc | xargs -r docker rmi && \
   echo "Dangling images removed."
 }
 
