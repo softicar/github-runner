@@ -11,6 +11,7 @@ RUN mkdir -p ${NEXUS_CONFIG_DIR}
 COPY docker-hub.repository.json ${NEXUS_CONFIG_DIR}/
 COPY gradle-plugins.repository.json ${NEXUS_CONFIG_DIR}/
 COPY maven-central.repository.json ${NEXUS_CONFIG_DIR}/
+COPY security-realms.json ${NEXUS_CONFIG_DIR}/
 
 # Copy the startup and configuration scripts
 COPY startup.sh /usr/local/bin/
