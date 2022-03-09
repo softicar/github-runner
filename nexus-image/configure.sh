@@ -41,6 +41,10 @@ configure_nexus() {
   curl -sf -u "admin:${new_password}" -X POST -H "Content-Type: application/json" -d "@$NEXUS_DATA_SOFTICAR_DIR/maven-central.repository.json" "${NEXUS_REST_BASE_URL}/v1/repositories/maven/proxy" -o /dev/null && \
   log "Added repository: maven-central"
 
+  # Configure security realms
+  curl -sf -u "admin:${new_password}" -X PUT -H "Content-Type: application/json" -d "@$NEXUS_DATA_SOFTICAR_DIR/security-realms.json" "${NEXUS_REST_BASE_URL}/v1/security/realms/active" -o /dev/null && \
+  log "Configured security realms."
+
   log "Finished configuration."
 }
 
