@@ -52,7 +52,7 @@ WORKDIR /runner
 RUN curl -Ls -o runner.tar.gz $( \
       [ $RUNNER_VERSION_OVERRIDE ] \
       && echo "https://github.com/actions/runner/releases/download/v${RUNNER_VERSION_OVERRIDE}/actions-runner-linux-x64-${RUNNER_VERSION_OVERRIDE}.tar.gz" \
-      || echo $(curl -Ls https://api.github.com/repos/actions/runner/releases/latest | grep -oP '(?<="browser_download_url": ")[^"]*' | grep linux-x64) \
+      || echo $(curl -Ls https://api.github.com/repos/actions/runner/releases/latest | grep -oP '(?<="browser_download_url": ")[^"]*' | egrep 'linux-x64-[0-9\.]+\.tar\.gz') \
     ) \
     && tar xzf ./runner.tar.gz \
     && rm ./runner.tar.gz \
