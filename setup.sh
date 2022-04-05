@@ -192,7 +192,7 @@ function install_sysbox() {
     echo -e "\nInstalling Sysbox..."
 
     TEMP_DIR="$(sudo mktemp -d)" && \
-    sudo wget -O $TEMP_DIR/sysbox-ce.deb https://downloads.nestybox.com/sysbox/releases/v${SYSBOX_VERSION}/sysbox-ce_${SYSBOX_VERSION}-0.ubuntu-${SYSBOX_UBUNTU_RELEASE}_amd64.deb && \
+    sudo wget -O $TEMP_DIR/sysbox-ce.deb https://downloads.nestybox.com/sysbox/releases/v${SYSBOX_VERSION}/sysbox-ce_${SYSBOX_VERSION}-0.linux_amd64.deb && \
     sudo apt install -y $TEMP_DIR/sysbox-ce.deb && \
     sudo rm -rf "$TEMP_DIR" && \
     echo "Sysbox installed."
