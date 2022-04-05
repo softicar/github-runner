@@ -16,8 +16,7 @@ SERVICE_SCRIPT_ENVIRONMENT_FILE=softicar-github-runner-service.env
 SERVICE_SCRIPT_PATH=$SCRIPT_WORKING_DIRECTORY/systemd-service/softicar-github-runner-service.sh
 SERVICE_TEMPLATE_PATH=systemd-service/softicar-github-runner.service-template
 
-SYSBOX_VERSION=0.4.1
-SYSBOX_UBUNTU_RELEASE=focal
+SYSBOX_VERSION=0.5.0
 
 REPOSITORY_NAME_EXAMPLE="<owner>/<repository>"
 REPOSITORY_NAME_REGEX="[a-zA-Z0-9]([_.-]?[a-zA-Z0-9]+)*/[a-zA-Z0-9]([_.-]?[a-zA-Z0-9]+)*"
