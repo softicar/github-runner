@@ -29,6 +29,10 @@ configure_nexus() {
   echo "${new_password}" > $ADMIN_PASSWORD_NEW_FILE && \
   log "Admin password changed. New password was written to: $ADMIN_PASSWORD_NEW_FILE"
 
+  # Enable anonymous access
+  curl -sf -u "admin:${new_password}" -X PUT -H "Content-Type: application/json" -d '{ "enabled": true }' "${NEXUS_REST_BASE_URL}/v1/security/anonymous" -o /dev/null && \
+  log "Anonymous access enabled."
+
   # Create repo: docker-hub
   curl -sf -u "admin:${new_password}" -X POST -H "Content-Type: application/json" -d "@$NEXUS_DATA_SOFTICAR_DIR/docker-hub.repository.json" "${NEXUS_REST_BASE_URL}/v1/repositories/docker/proxy" -o /dev/null && \
   log "Added repository: docker-hub"
