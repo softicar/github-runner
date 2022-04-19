@@ -63,6 +63,12 @@ remove_dangling_images() {
   echo "Dangling images removed."
 }
 
+# Exports additional environment variables for pending container builds.
+export_additional_build_environment() {
+  local runner_latest_download_url=$(curl -Ls https://api.github.com/repos/actions/runner/releases/latest | grep -oP '(?<="browser_download_url": ")[^"]*' | egrep 'linux-x64-[0-9\.]+\.tar\.gz')
+  export RUNNER_RELEASE_DOWNLOAD_URL=${RUNNER_RELEASE_DOWNLOAD_URL:-$runner_latest_download_url}
+}
+
 # -------------------------------- Main Script -------------------------------- #
 
 check_prerequisites
@@ -73,6 +79,8 @@ trap_signals
 # available to all child processes spawned by docker-compose.
 # This is required to have those variables available when (re-)building the "runner" image.
 [ -f $RUNNER_ENV_FILE ] && set -o allexport && source $RUNNER_ENV_FILE && set +o allexport
+
+export_additional_build_environment
 
 generate_runner_token
 
