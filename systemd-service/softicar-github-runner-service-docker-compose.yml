@@ -32,10 +32,10 @@
 # RUNNER_DUMB_INIT_VERSION
 #   The "Dumb-Init" version to use in the runner.
 #
-# RUNNER_VERSION_OVERRIDE
-#   Explicitly defines the GitHub Actions Runner version with which the runner is built (see https://github.com/actions/runner/releases).
-#   Can be used to downgrade to an older GitHub Actions Runner version.
-#   If undefined, the latest available version will be used.
+# RUNNER_RELEASE_DOWNLOAD_URL
+#   The URL of the GitHub Actions Runner .tar.gz archive with which the runner image is built (see https://github.com/actions/runner/releases).
+#   Can be used to downgrade to an older GitHub Actions Runner release.
+#   If undefined, the latest available release will be used.
 #   Undefined by default. Should remain undefined unless absolutely necessary.
 
 version: "3.4"
@@ -68,7 +68,7 @@ services:
         - RUNNER_ADOPT_OPEN_JDK_VERSION=${RUNNER_ADOPT_OPEN_JDK_VERSION:-15.0.2+7}
         - RUNNER_DOCKER_COMPOSE_VERSION=${RUNNER_DOCKER_COMPOSE_VERSION:-1.27.4}
         - RUNNER_DUMB_INIT_VERSION=${RUNNER_DUMB_INIT_VERSION:-1.2.2}
-        - RUNNER_VERSION_OVERRIDE=${RUNNER_VERSION_OVERRIDE}
+        - RUNNER_RELEASE_DOWNLOAD_URL=${RUNNER_RELEASE_DOWNLOAD_URL}
     environment:
       - GITHUB_REPOSITORY=${GITHUB_REPOSITORY}
       - GITHUB_RUNNER_LABELS=${GITHUB_RUNNER_LABELS}

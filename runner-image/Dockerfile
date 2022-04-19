@@ -47,13 +47,9 @@ RUN curl -Ls -o /usr/local/bin/dumb-init https://github.com/Yelp/dumb-init/relea
 
 # Install GitHub Actions Runner
 # see https://github.com/actions/runner
-ARG RUNNER_VERSION_OVERRIDE
+ARG RUNNER_RELEASE_DOWNLOAD_URL
 WORKDIR /runner
-RUN curl -Ls -o runner.tar.gz $( \
-      [ $RUNNER_VERSION_OVERRIDE ] \
-      && echo "https://github.com/actions/runner/releases/download/v${RUNNER_VERSION_OVERRIDE}/actions-runner-linux-x64-${RUNNER_VERSION_OVERRIDE}.tar.gz" \
-      || echo $(curl -Ls https://api.github.com/repos/actions/runner/releases/latest | grep -oP '(?<="browser_download_url": ")[^"]*' | egrep 'linux-x64-[0-9\.]+\.tar\.gz') \
-    ) \
+RUN curl -Ls -o runner.tar.gz ${RUNNER_RELEASE_DOWNLOAD_URL} \
     && tar xzf ./runner.tar.gz \
     && rm ./runner.tar.gz \
     && ./bin/installdependencies.sh \
