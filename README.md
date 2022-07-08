@@ -30,19 +30,22 @@ The following things are required to set up _SoftiCAR GitHub Runner_ on a VM:
 ## 3 Setup
 
 1. Configure your firewall to isolate the VM from the rest of the network (e.g. via dedicated DMZ). Allow _only:_
-   - _Outgoing_ HTTP, HTTPS and SSH connections to the internet.
-   - _Incoming_ HTTP and SSH connections from the internal network, for maintenance purposes.
+   - _Outgoing_ HTTP and HTTPS connections to the internet.
+   - _Incoming_ SSH connections from the internal network, for maintenance purposes.
    - Deny all other connections.
-1. Log in to the GitHub UI with your personal account:
-   - At `Settings` / `Manage Access` of the repository to build, add the build-bot user as an `Admin`.
-1. Log in to the VM, as a non-root user.
-1. Add a public RSA key in the GitHub UI:
+1. Add the build-bot user to the repository to build:
+   - Log in to the GitHub UI with your personal account.
+   - At `Settings` / `Collaborators and Teams` / `Manage Access` of the repository to build, add the build-bot user as an `Admin`.
+1. Prepare an RSA key pair:
+   - Log in to the VM, as a non-root user.
    - If the VM user has an RSA key pair which is also used on another machine, **delete it** and **generate a new one**.
      - Do _not_ reuse an existing key pair for this machine.
      - Delete `id_rsa` and `id_rsa.pub` from `/home/<user>/.ssh/`
      - If existing, delete `id_rsa` and `id_rsa.pub` from `/root/.ssh/` as well.
      - Run `ssh-keygen` to generate a new key pair in `/home/<user>/.ssh/`
-   - In the GitHub UI, at `(Build-Bot User Profile)` / `Settings` / `SSH and GPG keys`, add the content of `id_rsa.pub`
+1. Add the public RSA key in the GitHub UI:
+   - Log in to the GitHub UI with the build-bot user account.
+   - At `(Build-Bot User Profile)` / `Settings` / `SSH and GPG keys`, add the content of `id_rsa.pub`
 1. Install `git`:
 
        sudo apt install git
