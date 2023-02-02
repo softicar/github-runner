@@ -21,7 +21,7 @@
 #   The version of the "sonatype/nexus3" image.
 #
 # RUNNER_ADOPT_OPEN_JDK_VERSION
-#   The "Adopt OpenJDK" version to use in the runner.
+#   The "Eclipse Adoptium OpenJDK" version to use in the runner.
 #
 # RUNNER_DOCKER_COMPOSE_VERSION
 #   The "Docker Compose" version to use in the runner.
@@ -65,7 +65,7 @@ services:
     build:
       context: ../runner-image
       args:
-        - RUNNER_ADOPT_OPEN_JDK_VERSION=${RUNNER_ADOPT_OPEN_JDK_VERSION:-15.0.2+7}
+        - RUNNER_ADOPT_OPEN_JDK_VERSION=${RUNNER_ADOPT_OPEN_JDK_VERSION:-17.0.6+10}
         - RUNNER_DOCKER_COMPOSE_VERSION=${RUNNER_DOCKER_COMPOSE_VERSION:-1.27.4}
         - RUNNER_DUMB_INIT_VERSION=${RUNNER_DUMB_INIT_VERSION:-1.2.2}
         - RUNNER_RELEASE_DOWNLOAD_URL=${RUNNER_RELEASE_DOWNLOAD_URL}
