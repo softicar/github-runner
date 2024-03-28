@@ -103,7 +103,7 @@ To upgrade an existing _SoftiCAR GitHub Runner_ VM, follow these steps:
 1. Find the currently-used Personal Access Token (PAT) in `/etc/systemd/system/softicar-github-runner.service`, and copy it to a text editor.
 1. Uninstall the service with:
 
-       ./setup uninstall service
+       ./setup.sh uninstall service
 
    Note that this also stops the service if it's currently running.
 1. Stop and remove any remaining "runner" and "nexus" containers:
@@ -118,12 +118,12 @@ To upgrade an existing _SoftiCAR GitHub Runner_ VM, follow these steps:
 
 1. Install the service with:
 
-       ./setup install service
+       ./setup.sh install service
 
    Use the PAT that you copied to a text editor before.
 1. Start the service with:
 
-       ./control start
+       ./control.sh start
 
 ## 5 Motivation and Goals
 
