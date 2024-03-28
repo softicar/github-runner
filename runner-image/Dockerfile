@@ -17,7 +17,7 @@ RUN useradd -m softicar \
 ARG RUNNER_ADOPT_OPEN_JDK_VERSION
 WORKDIR /opt
 RUN RUNNER_ADOPT_OPEN_JDK_VERSION_FILE=$(echo $RUNNER_ADOPT_OPEN_JDK_VERSION | sed 's/+/_/') \
-    && curl -Ls -o jdk.tar.gz https://github.com/adoptium/temurin17-binaries/releases/download/jdk-${RUNNER_ADOPT_OPEN_JDK_VERSION}/OpenJDK17U-jdk_x64_linux_hotspot_${RUNNER_ADOPT_OPEN_JDK_VERSION_FILE}.tar.gz \
+    && curl -Ls -o jdk.tar.gz https://github.com/adoptium/temurin21-binaries/releases/download/jdk-${RUNNER_ADOPT_OPEN_JDK_VERSION}/OpenJDK21U-jdk_x64_linux_hotspot_${RUNNER_ADOPT_OPEN_JDK_VERSION_FILE}.tar.gz \
     && tar xzf ./jdk.tar.gz \
     && ln -s jdk-${RUNNER_ADOPT_OPEN_JDK_VERSION} jdk \
     && rm ./jdk.tar.gz
