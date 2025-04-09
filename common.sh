@@ -2,7 +2,7 @@
 #
 # Sourced by other scripts.
 
-SCRIPT_SUPPORTED_RELEASES=focal
+SCRIPT_SUPPORTED_RELEASES=noble
 SCRIPT_WORKING_DIRECTORY=$(cd `dirname $0` && pwd)
 
 DOCKER_COMPOSE_VERSION=1.29.2

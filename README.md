@@ -20,9 +20,9 @@ The following things are required to set up _SoftiCAR GitHub Runner_ on a VM:
    - To add the build-bot user as a member.
 1. A DMZ-capable firewall, and permissions to edit its configuration.
    - To set up network isolation.
-1. A dedicated Ubuntu 20.04 Server VM.
+1. A dedicated Ubuntu 24.04 Server VM.
    - Specs:
-     - 20 GB HDD
+     - 40 GB HDD
      - Recommended: 24 CPU threads, 24 GB RAM
      - Minimum: 8 CPU threads, 8 GB RAM
    - Unattended upgrades enabled, for security patches.

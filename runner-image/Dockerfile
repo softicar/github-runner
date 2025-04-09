@@ -2,7 +2,7 @@
 
 # Use the Ubuntu base image provided by the "sysbox" vendor, "nestybox"
 # see https://github.com/nestybox/dockerfiles/blob/master/ubuntu-focal-systemd-docker/Dockerfile
-FROM nestybox/ubuntu-focal-systemd-docker
+FROM nestybox/ubuntu-noble-systemd-docker
 
 # Add "softicar" user, and add them to required groups.
 # Remove default admin user (as defined in https://github.com/nestybox/dockerfiles/blob/master/ubuntu-focal-systemd/Dockerfile)

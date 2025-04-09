@@ -46,7 +46,7 @@ services:
     build:
       context: ../nexus-image
       args:
-        - NEXUS_VERSION=${NEXUS_VERSION:-3.34.1}
+        - NEXUS_VERSION=${NEXUS_VERSION:-3.79.0}
     ports:
       - "8081:8081"
       - "8123:8123"
@@ -65,7 +65,7 @@ services:
     build:
       context: ../runner-image
       args:
-        - RUNNER_ADOPT_OPEN_JDK_VERSION=${RUNNER_ADOPT_OPEN_JDK_VERSION:-21.0.2+13}
+        - RUNNER_ADOPT_OPEN_JDK_VERSION=${RUNNER_ADOPT_OPEN_JDK_VERSION:-21.0.6+7}
         - RUNNER_DOCKER_COMPOSE_VERSION=${RUNNER_DOCKER_COMPOSE_VERSION:-1.29.2}
         - RUNNER_DUMB_INIT_VERSION=${RUNNER_DUMB_INIT_VERSION:-1.2.5}
         - RUNNER_RELEASE_DOWNLOAD_URL=${RUNNER_RELEASE_DOWNLOAD_URL}
