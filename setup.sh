@@ -117,7 +117,7 @@ function install_docker_compose() {
     echo -e "\nInstalling Docker-Compose..."
 
     sudo mkdir -p $DOCKER_COMPOSE_HOME && \
-    sudo wget -O $DOCKER_COMPOSE_FILE https://github.com/docker/compose/releases/download/${DOCKER_COMPOSE_VERSION}/docker-compose-Linux-x86_64 && \
+    sudo wget -O $DOCKER_COMPOSE_FILE https://github.com/docker/compose/releases/download/v${DOCKER_COMPOSE_VERSION}/docker-compose-linux-x86_64 && \
     sudo chmod +x $DOCKER_COMPOSE_FILE && \
     sudo ln -sf $DOCKER_COMPOSE_FILE $DOCKER_COMPOSE_DESTINATION && \
     echo "Docker-Compose installed."
@@ -192,7 +192,7 @@ function install_sysbox() {
     echo -e "\nInstalling Sysbox..."
 
     TEMP_DIR="$(sudo mktemp -d)" && \
-    sudo wget -O $TEMP_DIR/sysbox-ce.deb https://downloads.nestybox.com/sysbox/releases/v${SYSBOX_VERSION}/sysbox-ce_${SYSBOX_VERSION}-0.linux_amd64.deb && \
+    sudo wget -O $TEMP_DIR/sysbox-ce.deb https://github.com/nestybox/sysbox/releases/download/v${SYSBOX_VERSION}/sysbox-ce_${SYSBOX_VERSION}.linux_amd64.deb && \
     sudo apt install -y $TEMP_DIR/sysbox-ce.deb && \
     sudo rm -rf "$TEMP_DIR" && \
     echo "Sysbox installed."

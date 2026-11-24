@@ -29,6 +29,14 @@ configure_nexus() {
   echo "${new_password}" > $ADMIN_PASSWORD_NEW_FILE && \
   log "Admin password changed. New password was written to: $ADMIN_PASSWORD_NEW_FILE"
 
+  # Accept the End User License Agreement (EULA) of Nexus Repository Community Edition.
+  # Until it is accepted, Nexus does not serve any content (e.g. Docker image pulls are denied).
+  # The EULA status is fetched, its "accepted" flag is flipped, and the result is posted back (as required by the REST API).
+  curl -sf -u "admin:${new_password}" "${NEXUS_REST_BASE_URL}/v1/system/eula" \
+  | sed 's/"accepted" *: *false/"accepted": true/' \
+  | curl -sf -u "admin:${new_password}" -X POST -H "Content-Type: application/json" --data-binary @- "${NEXUS_REST_BASE_URL}/v1/system/eula" -o /dev/null && \
+  log "Accepted the Community Edition EULA (see https://links.sonatype.com/products/nxrm/ce-eula)."
+
   # Enable anonymous access
   curl -sf -u "admin:${new_password}" -X PUT -H "Content-Type: application/json" -d '{ "enabled": true }' "${NEXUS_REST_BASE_URL}/v1/security/anonymous" -o /dev/null && \
   log "Anonymous access enabled."

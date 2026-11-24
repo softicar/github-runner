@@ -5,7 +5,7 @@
 SCRIPT_SUPPORTED_RELEASES=noble
 SCRIPT_WORKING_DIRECTORY=$(cd `dirname $0` && pwd)
 
-DOCKER_COMPOSE_VERSION=1.29.2
+DOCKER_COMPOSE_VERSION=5.8.0
 DOCKER_COMPOSE_DESTINATION=/usr/bin/docker-compose
 DOCKER_COMPOSE_HOME=/opt/docker-compose
 DOCKER_COMPOSE_FILE=$DOCKER_COMPOSE_HOME/docker-compose-Linux-x86_64-$DOCKER_COMPOSE_VERSION
@@ -16,7 +16,7 @@ SERVICE_SCRIPT_ENVIRONMENT_FILE=softicar-github-runner-service.env
 SERVICE_SCRIPT_PATH=$SCRIPT_WORKING_DIRECTORY/systemd-service/softicar-github-runner-service.sh
 SERVICE_TEMPLATE_PATH=systemd-service/softicar-github-runner.service-template
 
-SYSBOX_VERSION=0.5.2
+SYSBOX_VERSION=0.7.2
 
 REPOSITORY_NAME_EXAMPLE="<owner>/<repository>"
 REPOSITORY_NAME_REGEX="[a-zA-Z0-9]([_.-]?[a-zA-Z0-9]+)*/[a-zA-Z0-9]([_.-]?[a-zA-Z0-9]+)*"
