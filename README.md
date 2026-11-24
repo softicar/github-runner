@@ -42,7 +42,8 @@ The following things are required to set up _SoftiCAR GitHub Runner_ on a VM:
      - Do _not_ reuse an existing key pair for this machine.
      - Delete `id_rsa` and `id_rsa.pub` from `/home/<user>/.ssh/`
      - If existing, delete `id_rsa` and `id_rsa.pub` from `/root/.ssh/` as well.
-     - Run `ssh-keygen` to generate a new key pair in `/home/<user>/.ssh/`
+     - Run `ssh-keygen -t rsa -b 4096` to generate a new RSA key pair in `/home/<user>/.ssh/`
+       - Note that `-t rsa` is required: since OpenSSH 9.5 (Ubuntu 24.04 ships 9.6), a plain `ssh-keygen` generates an Ed25519 key pair (`id_ed25519`) instead.
 1. Add the public RSA key in the GitHub UI:
    - Log in to the GitHub UI with the build-bot user account.
    - At `(Build-Bot User Profile)` / `Settings` / `SSH and GPG keys`, add the content of `id_rsa.pub`
@@ -56,14 +57,14 @@ The following things are required to set up _SoftiCAR GitHub Runner_ on a VM:
        git clone https://github.com/softicar/github-runner.git
        cd ~/github-runner
 
-3. Use the setup script to install _all_ required components (i.e. Docker, Docker-Compose, Sysbox, and a Systemd Service):
+1. Use the setup script to install _all_ required components (i.e. Docker, Docker-Compose, Sysbox, and a Systemd Service):
 
        ./setup.sh install
 
    - Answer to various prompts.
    - When prompted for a Personal Access Token (PAT), log in to the GitHub UI with the build-bot account.
-   - Head to `(Build-Bot User Profile)` / `Settings` / `Developer settings` / `Personal access tokens`
-   - Create a PAT with settings and scopes as described in the terminal prompt.
+   - Head to `(Build-Bot User Profile)` / `Settings` / `Developer settings` / `Personal access tokens` / `Tokens (classic)`
+   - Create a classic PAT with settings and scopes as described in the terminal prompt (fine-grained tokens do not offer these scopes).
    - Copy and paste the PAT into the terminal prompt.
 1. **Optionally,** copy `softicar-github-runner-service.env-example` to `/home/<user>/.softicar/softicar-github-runner-service.env`
    - Normally, this environment file is _not_ required.
