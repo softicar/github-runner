@@ -1,11 +1,11 @@
 # Dockerfile for the docker-in-docker-enabled SoftiCAR spin of GitHub Actions Runner.
 
 # Use the Ubuntu base image provided by the "sysbox" vendor, "nestybox"
-# see https://github.com/nestybox/dockerfiles/blob/master/ubuntu-focal-systemd-docker/Dockerfile
+# see https://github.com/nestybox/dockerfiles/blob/master/ubuntu-noble-systemd-docker/Dockerfile
 FROM nestybox/ubuntu-noble-systemd-docker
 
 # Add "softicar" user, and add them to required groups.
-# Remove default admin user (as defined in https://github.com/nestybox/dockerfiles/blob/master/ubuntu-focal-systemd/Dockerfile)
+# Remove default admin user (as defined in https://github.com/nestybox/dockerfiles/blob/master/ubuntu-noble-systemd/Dockerfile)
 RUN useradd -m softicar \
     && usermod -aG sudo softicar \
     && usermod -aG docker softicar \
@@ -13,11 +13,13 @@ RUN useradd -m softicar \
     && userdel -r admin
 
 # Install JDK
-# see https://github.com/AdoptOpenJDK
+# see https://adoptium.net/temurin/releases/
+# The major version (e.g. "25" for "25.0.5.1+2") selects the release repository, e.g. https://github.com/adoptium/temurin25-binaries
 ARG RUNNER_ADOPT_OPEN_JDK_VERSION
 WORKDIR /opt
-RUN RUNNER_ADOPT_OPEN_JDK_VERSION_FILE=$(echo $RUNNER_ADOPT_OPEN_JDK_VERSION | sed 's/+/_/') \
-    && curl -Ls -o jdk.tar.gz https://github.com/adoptium/temurin21-binaries/releases/download/jdk-${RUNNER_ADOPT_OPEN_JDK_VERSION}/OpenJDK21U-jdk_x64_linux_hotspot_${RUNNER_ADOPT_OPEN_JDK_VERSION_FILE}.tar.gz \
+RUN RUNNER_ADOPT_OPEN_JDK_VERSION_MAJOR=${RUNNER_ADOPT_OPEN_JDK_VERSION%%[.+]*} \
+    && RUNNER_ADOPT_OPEN_JDK_VERSION_FILE=$(echo $RUNNER_ADOPT_OPEN_JDK_VERSION | sed 's/+/_/') \
+    && curl -fLs -o jdk.tar.gz https://github.com/adoptium/temurin${RUNNER_ADOPT_OPEN_JDK_VERSION_MAJOR}-binaries/releases/download/jdk-${RUNNER_ADOPT_OPEN_JDK_VERSION}/OpenJDK${RUNNER_ADOPT_OPEN_JDK_VERSION_MAJOR}U-jdk_x64_linux_hotspot_${RUNNER_ADOPT_OPEN_JDK_VERSION_FILE}.tar.gz \
     && tar xzf ./jdk.tar.gz \
     && ln -s jdk-${RUNNER_ADOPT_OPEN_JDK_VERSION} jdk \
     && rm ./jdk.tar.gz
@@ -36,7 +38,7 @@ RUN apt-get update \
 # Install docker-compose
 # see https://github.com/docker/compose/
 ARG RUNNER_DOCKER_COMPOSE_VERSION
-RUN curl -Ls -o /usr/local/bin/docker-compose https://github.com/docker/compose/releases/download/${RUNNER_DOCKER_COMPOSE_VERSION}/docker-compose-Linux-x86_64 \
+RUN curl -Ls -o /usr/local/bin/docker-compose https://github.com/docker/compose/releases/download/v${RUNNER_DOCKER_COMPOSE_VERSION}/docker-compose-linux-x86_64 \
     && chmod +x /usr/local/bin/docker-compose
 
 # Install dumb-init, for subsequent use as entrypoint
@@ -53,7 +55,8 @@ RUN curl -Ls -o runner.tar.gz ${RUNNER_RELEASE_DOWNLOAD_URL} \
     && tar xzf ./runner.tar.gz \
     && rm ./runner.tar.gz \
     && ./bin/installdependencies.sh \
-    && rm -rf /var/lib/apt/lists/*
+    && rm -rf /var/lib/apt/lists/* \
+    && chown -R softicar:softicar /runner
 
 # Create Docker daemon configuration
 ARG RUNNER_DOCKER_DAEMON_CONFIG='{ "insecure-registries" : ["nexus:8123"], "registry-mirrors": ["http://nexus:8123/"] }'

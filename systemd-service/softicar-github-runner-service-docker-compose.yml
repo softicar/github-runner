@@ -18,7 +18,9 @@
 #   Must be smaller than NEXUS_CHECK_INTERVAL.
 #
 # NEXUS_VERSION
-#   The version of the "sonatype/nexus3" image.
+#   The tag of the "sonatype/nexus3" image.
+#   Use a "-ubi" (Red Hat UBI based) tag: the plain tags are Alpine based and do not include bash,
+#   which is required by the startup scripts of the "nexus" image.
 #
 # RUNNER_ADOPT_OPEN_JDK_VERSION
 #   The "Eclipse Adoptium OpenJDK" version to use in the runner.
@@ -38,7 +40,6 @@
 #   If undefined, the latest available release will be used.
 #   Undefined by default. Should remain undefined unless absolutely necessary.
 
-version: "3.4"
 services:
   nexus:
     container_name: nexus
@@ -46,7 +47,7 @@ services:
     build:
       context: ../nexus-image
       args:
-        - NEXUS_VERSION=${NEXUS_VERSION:-3.79.0}
+        - NEXUS_VERSION=${NEXUS_VERSION:-3.98.3-ubi}
     ports:
       - "8081:8081"
       - "8123:8123"
@@ -65,8 +66,8 @@ services:
     build:
       context: ../runner-image
       args:
-        - RUNNER_ADOPT_OPEN_JDK_VERSION=${RUNNER_ADOPT_OPEN_JDK_VERSION:-21.0.6+7}
-        - RUNNER_DOCKER_COMPOSE_VERSION=${RUNNER_DOCKER_COMPOSE_VERSION:-1.29.2}
+        - RUNNER_ADOPT_OPEN_JDK_VERSION=${RUNNER_ADOPT_OPEN_JDK_VERSION:-25.0.5.1+2}
+        - RUNNER_DOCKER_COMPOSE_VERSION=${RUNNER_DOCKER_COMPOSE_VERSION:-5.8.0}
         - RUNNER_DUMB_INIT_VERSION=${RUNNER_DUMB_INIT_VERSION:-1.2.5}
         - RUNNER_RELEASE_DOWNLOAD_URL=${RUNNER_RELEASE_DOWNLOAD_URL}
     environment:

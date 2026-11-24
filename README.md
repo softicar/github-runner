@@ -116,6 +116,17 @@ To upgrade an existing _SoftiCAR GitHub Runner_ VM, follow these steps:
        cd github-runner
        git pull
 
+1. If the Sysbox or Docker-Compose version in `common.sh` changed, reinstall those components:
+
+       ./setup.sh uninstall sysbox docker-compose
+       ./setup.sh install sysbox docker-compose
+
+1. If the Nexus version in `systemd-service/softicar-github-runner-service-docker-compose.yml` changed, remove the Nexus image and its cache volume, so that both get recreated:
+
+       docker rmi softicar/nexus
+       docker volume rm nexus-data
+
+   Otherwise, the previously built Nexus image keeps being used. The cache gets refilled during subsequent builds.
 1. Install the service with:
 
        ./setup.sh install service
@@ -164,6 +175,7 @@ Notes on components:
 - `nexus` container:
   - Serves as pull-through cache proxy for build-time resources (i.e. Docker images, Gradle plugins and Gradle dependencies)
   - Avoids repeated downloads after the `runner` container was disposed
+  - Uses Sonatype Nexus Repository Community Edition, whose [End User License Agreement](https://links.sonatype.com/products/nxrm/ce-eula) is accepted automatically on first start (Nexus does not serve any content otherwise)
 - `Docker Engine (nested)`:
   - Runs in an unprivileged container
   - This is enabled via the `sysbox` runtime of the `runner` container

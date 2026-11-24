@@ -19,8 +19,5 @@ RUN chmod +x /usr/local/bin/startup.sh
 COPY configure.sh /usr/local/bin/
 RUN chmod +x /usr/local/bin/configure.sh
 
-# Configure Karaf subsystem properties
-RUN sed -i 's/storage.diskCache.diskFreeSpaceLimit=.*/storage.diskCache.diskFreeSpaceLimit=512/g' /opt/sonatype/nexus/etc/karaf/system.properties
-
 USER nexus
 CMD ["startup.sh"]
